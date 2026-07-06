@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Will AI take your job? — Exposure Index by RL Studio</title>
+<meta name="description" content="A calm, task-level read on how exposed your job is to AI. Find your role, fine-tune it to your real work, and see what changes, what holds, and how to stay ahead." />
+
+<!-- Open Graph / social sharing -->
+<meta property="og:title" content="Will AI take your job?" />
+<meta property="og:description" content="Find your role and get a task-level read on your AI exposure — what changes, what holds, and how to stay ahead. By RL Studio." />
+<meta property="og:type" content="website" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;450;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#E9ECF2;
+    --surface:#FFFFFF;
+    --surface-2:#F5F7FB;
+    --ink:#141922;
+    --ink-soft:#3A424F;
+    --muted:#68717F;
+    --faint:#98A1AF;
+    --line:#DEE3EC;
+    --line-2:#E9EDF3;
+    --brand:#2233E6;
+    --brand-deep:#1826B4;
+    --brand-wash:#EAECFD;
+
+    --instrument:#12151D;      /* dark readout panel */
+    --instrument-2:#1B2029;
+    --instrument-line:#2A3240;
+    --instrument-muted:#8A94A6;
+
+    --low:#12A67C;
+    --mid:#E39A2B;
+    --high:#E5484D;
+
+    --radius:18px;
+    --radius-sm:12px;
+    --shadow:0 1px 2px rgba(20,25,34,.04), 0 12px 30px -18px rgba(20,25,34,.22);
+    --shadow-lift:0 2px 4px rgba(20,25,34,.05), 0 26px 50px -24px rgba(20,25,34,.32);
+
+    --maxw:1080px;
+    --f-display:"Space Grotesk", system-ui, sans-serif;
+    --f-body:"Inter", system-ui, sans-serif;
+    --f-mono:"Space Mono", ui-monospace, monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--f-body);
+    font-size:16px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    background-image:
+      radial-gradient(1200px 600px at 88% -10%, rgba(34,51,230,.06), transparent 60%),
+      radial-gradient(900px 500px at -5% 0%, rgba(18,166,124,.05), transparent 55%);
+    background-attachment:fixed;
+  }
+  a{color:inherit;}
+  button{font-family:inherit;cursor:pointer;}
+  ::selection{background:var(--brand);color:#fff;}
+
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px;}
+
+  .eyebrow{
+    font-family:var(--f-mono);
+    font-size:11.5px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--muted);
+    display:inline-flex;align-items:center;gap:8px;
+  }
+  .eyebrow::before{
+    content:"";width:16px;height:1px;background:var(--faint);display:inline-block;
+  }
+
+  /* ---------- Header ---------- */
+  header.top{
+    position:sticky;top:0;z-index:40;
+    backdrop-filter:saturate(140%) blur(10px);
+    background:rgba(233,236,242,.82);
+    border-bottom:1px solid var(--line);
+  }
+  .top-inner{display:flex;align-items:center;justify-content:space-between;height:60px;}
+  .brand{display:flex;align-items:center;gap:11px;text-decoration:none;}
+  .brand-badge{
+    width:30px;height:30px;border-radius:8px;
+    background:var(--instrument);color:#fff;
+    display:grid;place-items:center;
+    font-family:var(--f-mono);font-weight:700;font-size:13px;letter-spacing:.02em;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.08), 0 6px 14px -8px rgba(20,25,34,.6);
+    position:relative;overflow:hidden;
+  }
+  .brand-badge::after{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(135deg,transparent 55%,rgba(34,51,230,.55));
+    mix-blend-mode:screen;
+  }
+  .brand-name{font-family:var(--f-display);font-weight:600;font-size:15.5px;letter-spacing:-.01em;}
+  .brand-name span{color:var(--muted);font-weight:500;}
+  .top a.method-link{
+    font-family:var(--f-mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--muted);text-decoration:none;padding:8px 10px;border-radius:8px;
+  }
+  .top a.method-link:hover{color:var(--ink);background:var(--surface);}
+
+  /* ---------- Hero ---------- */
+  .hero{padding:74px 0 30px;}
+  .hero h1{
+    font-family:var(--f-display);
+    font-weight:600;
+    font-size:clamp(38px,6.4vw,68px);
+    line-height:1.02;
+    letter-spacing:-.03em;
+    margin:20px 0 0;
+    max-width:16ch;
+  }
+  .hero h1 em{font-style:normal;color:var(--brand);position:relative;white-space:nowrap;}
+  .hero p.lede{
+    font-size:clamp(16px,2.1vw,19px);
+    color:var(--ink-soft);
+    max-width:56ch;
+    margin:22px 0 0;
+    line-height:1.5;
+  }
+  .hero p.lede b{font-weight:600;color:var(--ink);}
+
+  /* ---------- Search / picker ---------- */
+  .search-block{margin-top:34px;max-width:620px;position:relative;}
+  .search-field{
+    display:flex;align-items:center;gap:12px;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:5px 6px 5px 16px;
+    box-shadow:var(--shadow);
+    transition:border-color .18s ease, box-shadow .18s ease;
+  }
+  .search-field:focus-within{border-color:var(--brand);box-shadow:0 0 0 4px var(--brand-wash), var(--shadow);}
+  .search-field svg{flex:none;color:var(--faint);}
+  .search-field input{
+    border:0;outline:0;background:transparent;
+    font-family:var(--f-body);font-size:17px;color:var(--ink);
+    width:100%;padding:14px 0;
+  }
+  .search-field input::placeholder{color:var(--faint);}
+  .search-hint{
+    font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;color:var(--faint);
+    padding:0 4px;display:none;
+  }
+  @media(min-width:560px){.search-hint{display:block;}}
+
+  .results{
+    margin-top:10px;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:14px;
+    box-shadow:var(--shadow-lift);
+    overflow:hidden;
+    display:none;
+    position:absolute;left:0;right:0;z-index:20;
+    max-height:340px;overflow-y:auto;
+  }
+  .results.open{display:block;}
+  .res-group-label{
+    font-family:var(--f-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--faint);padding:12px 16px 6px;
+  }
+  .res-item{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:11px 16px;cursor:pointer;border:0;background:none;width:100%;text-align:left;
+    font-size:15px;color:var(--ink);
+  }
+  .res-item:hover,.res-item.active{background:var(--surface-2);}
+  .res-item .cat{font-family:var(--f-mono);font-size:10.5px;color:var(--faint);letter-spacing:.04em;text-transform:uppercase;}
+  .res-empty{padding:16px;color:var(--muted);font-size:14px;}
+  .res-empty b{color:var(--ink);}
+
+  .chips{margin-top:16px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+  .chips .chip-label{font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-right:2px;}
+  .chip{
+    border:1px solid var(--line);background:var(--surface);
+    border-radius:999px;padding:7px 13px;font-size:13.5px;color:var(--ink-soft);
+    transition:all .15s ease;
+  }
+  .chip:hover{border-color:var(--brand);color:var(--brand);background:var(--brand-wash);}
+
+  /* ---------- Analyzer ---------- */
+  .analyzer{display:none;padding:14px 0 40px;}
+  .analyzer.show{display:block;animation:rise .5s cubic-bezier(.2,.7,.2,1);}
+  @keyframes rise{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
+
+  .job-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:8px 0 22px;}
+  .job-head .role{font-family:var(--f-display);font-weight:600;font-size:clamp(24px,3.4vw,34px);letter-spacing:-.02em;line-height:1.05;}
+  .job-head .role small{display:block;font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:400;margin-bottom:7px;}
+  .btn-ghost{
+    border:1px solid var(--line);background:var(--surface);color:var(--ink-soft);
+    border-radius:10px;padding:9px 14px;font-size:13.5px;display:inline-flex;align-items:center;gap:7px;
+    transition:all .15s ease;
+  }
+  .btn-ghost:hover{border-color:var(--brand);color:var(--brand);}
+
+  .grid{display:grid;grid-template-columns:1fr;gap:22px;}
+  @media(min-width:900px){.grid{grid-template-columns:1.05fr .95fr;align-items:start;}}
+
+  .panel{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow);
+  }
+  .panel .p-head{padding:18px 22px 0;}
+  .panel .p-title{font-family:var(--f-display);font-weight:600;font-size:16px;letter-spacing:-.01em;}
+  .panel .p-sub{font-size:13px;color:var(--muted);margin-top:3px;}
+
+  /* Questions */
+  .q{padding:18px 22px;border-top:1px solid var(--line-2);}
+  .q:first-of-type{border-top:0;}
+  .q .q-text{font-size:14.5px;color:var(--ink-soft);margin-bottom:11px;line-height:1.4;}
+  .seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:var(--surface-2);padding:4px;border-radius:11px;}
+  .seg button{
+    border:0;background:transparent;border-radius:8px;padding:9px 6px;font-size:13px;color:var(--muted);
+    transition:all .15s ease;font-weight:500;
+  }
+  .seg button:hover{color:var(--ink);}
+  .seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(20,25,34,.06),0 1px 0 rgba(20,25,34,.03);font-weight:600;}
+
+  /* Readout (dark instrument) */
+  .readout{
+    background:var(--instrument);
+    border:1px solid var(--instrument-line);
+    border-radius:var(--radius);
+    color:#fff;
+    padding:24px 24px 26px;
+    position:relative;overflow:hidden;
+    box-shadow:var(--shadow-lift);
+  }
+  @media(min-width:900px){.readout{position:sticky;top:80px;}}
+  .readout::before{
+    content:"";position:absolute;inset:0;
+    background:
+      radial-gradient(600px 220px at 80% -20%, rgba(34,51,230,.20), transparent 60%),
+      radial-gradient(400px 200px at -10% 120%, rgba(18,166,124,.12), transparent 60%);
+    pointer-events:none;
+  }
+  .readout .r-top{display:flex;justify-content:space-between;align-items:center;position:relative;}
+  .readout .r-label{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--instrument-muted);}
+  .readout .r-live{display:inline-flex;align-items:center;gap:6px;font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--instrument-muted);}
+  .readout .dot{width:6px;height:6px;border-radius:50%;background:var(--low);box-shadow:0 0 0 0 rgba(255,255,255,.4);animation:pulse 2.4s ease-out infinite;}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 currentColor;opacity:1;}70%{box-shadow:0 0 0 7px transparent;opacity:.7;}100%{box-shadow:0 0 0 0 transparent;opacity:1;}}
+
+  .score-row{display:flex;align-items:baseline;gap:10px;margin-top:14px;position:relative;}
+  .score-num{font-family:var(--f-mono);font-weight:700;font-size:clamp(58px,11vw,84px);line-height:.9;letter-spacing:-.03em;}
+  .score-unit{font-family:var(--f-mono);font-size:20px;color:var(--instrument-muted);}
+  .score-band{margin-top:6px;font-family:var(--f-display);font-weight:600;font-size:19px;letter-spacing:-.01em;position:relative;}
+  .score-desc{margin-top:8px;font-size:13.5px;color:#C7CEDA;max-width:42ch;position:relative;line-height:1.45;}
+
+  /* Gauge */
+  .gauge{margin-top:20px;position:relative;}
+  .gauge .track{height:10px;border-radius:999px;background:linear-gradient(90deg,var(--low) 0%,var(--low) 22%,var(--mid) 52%,var(--high) 82%,var(--high) 100%);position:relative;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06);}
+  .gauge .ticks{display:flex;justify-content:space-between;margin-top:8px;}
+  .gauge .ticks span{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.08em;color:var(--instrument-muted);}
+  .gauge .marker{
+    position:absolute;top:-5px;width:4px;height:20px;border-radius:3px;background:#fff;
+    box-shadow:0 0 0 3px var(--instrument), 0 2px 8px rgba(0,0,0,.5);
+    transition:left .7s cubic-bezier(.2,.8,.2,1);
+    transform:translateX(-50%);
+  }
+  .r-foot{margin-top:20px;padding-top:16px;border-top:1px solid var(--instrument-line);display:flex;gap:18px;position:relative;}
+  .r-foot .m{flex:1;}
+  .r-foot .m .k{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--instrument-muted);}
+  .r-foot .m .v{font-family:var(--f-display);font-weight:600;font-size:14.5px;margin-top:4px;color:#EAEEF4;line-height:1.25;}
+
+  /* Breakdown */
+  .breakdown{margin-top:22px;display:grid;grid-template-columns:1fr;gap:16px;}
+  @media(min-width:640px){.breakdown{grid-template-columns:1fr 1fr;}}
+  .bd{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow);}
+  .bd h3{font-family:var(--f-display);font-size:15px;font-weight:600;margin:0;display:flex;align-items:center;gap:9px;letter-spacing:-.01em;}
+  .bd h3 .tag{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;padding:3px 7px;border-radius:6px;font-weight:700;}
+  .bd.exposed h3 .tag{background:#FDECEC;color:#C13438;}
+  .bd.edge h3 .tag{background:#E4F5EF;color:#0C7E5F;}
+  .bd ul{list-style:none;padding:0;margin:14px 0 0;}
+  .bd li{position:relative;padding:9px 0 9px 24px;font-size:14px;color:var(--ink-soft);border-top:1px solid var(--line-2);line-height:1.4;}
+  .bd li:first-child{border-top:0;}
+  .bd li::before{position:absolute;left:0;top:9px;font-family:var(--f-mono);font-size:13px;}
+  .bd.exposed li::before{content:"→";color:var(--high);}
+  .bd.edge li::before{content:"◆";color:var(--low);font-size:10px;top:11px;}
+
+  /* How to stay ahead */
+  .ahead{margin-top:22px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);}
+  .ahead .p-title{font-family:var(--f-display);font-weight:600;font-size:16px;letter-spacing:-.01em;}
+  .ahead .p-sub{font-size:13px;color:var(--muted);margin-top:3px;margin-bottom:4px;}
+  .moves{display:grid;grid-template-columns:1fr;gap:2px;margin-top:14px;}
+  @media(min-width:700px){.moves{grid-template-columns:1fr 1fr;gap:2px 30px;}}
+  .move{display:flex;gap:13px;padding:14px 0;border-top:1px solid var(--line-2);}
+  .move .n{font-family:var(--f-mono);font-size:12px;font-weight:700;color:var(--brand);flex:none;padding-top:1px;}
+  .move .mt{font-size:14px;color:var(--ink-soft);line-height:1.45;}
+  .move .mt b{color:var(--ink);font-weight:600;}
+
+  .actions{margin-top:22px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;}
+  .btn-primary{
+    background:var(--brand);color:#fff;border:0;border-radius:11px;padding:13px 20px;font-size:14.5px;font-weight:600;
+    display:inline-flex;align-items:center;gap:9px;transition:background .15s ease, transform .1s ease;
+    box-shadow:0 8px 20px -10px rgba(34,51,230,.7);
+  }
+  .btn-primary:hover{background:var(--brand-deep);}
+  .btn-primary:active{transform:translateY(1px);}
+  .copy-note{font-family:var(--f-mono);font-size:12px;color:var(--low);opacity:0;transition:opacity .2s;}
+  .copy-note.show{opacity:1;}
+
+  /* Disclaimer inline */
+  .disc{margin-top:18px;font-size:12.5px;color:var(--muted);max-width:70ch;line-height:1.5;}
+
+  /* ---------- Footer / method ---------- */
+  footer{margin-top:20px;border-top:1px solid var(--line);background:var(--surface-2);}
+  .foot-grid{display:grid;grid-template-columns:1fr;gap:30px;padding:48px 0 30px;}
+  @media(min-width:760px){.foot-grid{grid-template-columns:1.3fr 1fr;}}
+  .method h2{font-family:var(--f-display);font-weight:600;font-size:20px;letter-spacing:-.02em;margin:0 0 4px;}
+  .method p{font-size:14px;color:var(--ink-soft);line-height:1.6;max-width:60ch;margin:12px 0 0;}
+  .method p b{color:var(--ink);font-weight:600;}
+  .factors{margin-top:18px;display:grid;gap:8px;}
+  .factor{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink-soft);}
+  .factor .arrow{font-family:var(--f-mono);font-weight:700;width:22px;flex:none;}
+  .factor .up{color:var(--high);}
+  .factor .down{color:var(--low);}
+  .foot-side .eyebrow{margin-bottom:14px;}
+  .foot-side p{font-size:13px;color:var(--muted);line-height:1.6;}
+  .foot-bar{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;padding:18px 0 34px;border-top:1px solid var(--line);}
+  .foot-bar .brand-name{font-size:14px;}
+  .foot-bar small{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;color:var(--faint);}
+
+  :focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:6px;}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important;transition:none !important;scroll-behavior:auto !important;}
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap top-inner">
+    <a class="brand" href="#top" aria-label="RL Studio home">
+      <span class="brand-badge">RL</span>
+      <span class="brand-name">RL Studio<span> · Exposure Index</span></span>
+    </a>
+    <a class="method-link" href="#method">How it works</a>
+  </div>
+</header>
+
+<main id="top">
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap">
+      <span class="eyebrow">Task-level AI exposure · 2026</span>
+      <h1>Will AI take <em>your&nbsp;job?</em></h1>
+      <p class="lede">The honest answer is rarely yes or no. AI comes for <b>tasks</b>, not titles — so the real question is how much of your day it can already do. Find your role, tune it to your actual work, and get a clear read.</p>
+
+      <div class="search-block">
+        <div class="search-field">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <input id="search" type="text" autocomplete="off" placeholder="Type your job title…" aria-label="Search your job title" aria-expanded="false" aria-controls="results" />
+          <span class="search-hint">↵ to select</span>
+        </div>
+        <div class="results" id="results" role="listbox" aria-label="Job results"></div>
+      </div>
+
+      <div class="chips" id="chips">
+        <span class="chip-label">Try</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ANALYZER -->
+  <section class="analyzer" id="analyzer" aria-live="polite">
+    <div class="wrap">
+      <div class="job-head">
+        <div class="role"><small>Analyzing role</small><span id="roleName">—</span></div>
+        <button class="btn-ghost" id="changeJob">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+          Change role
+        </button>
+      </div>
+
+      <div class="grid">
+        <!-- LEFT: questions -->
+        <div class="panel" id="questionPanel">
+          <div class="p-head">
+            <div class="p-title">Tune it to your real work</div>
+            <div class="p-sub">Two jobs with the same title can be worlds apart. Adjust these and the reading updates live.</div>
+          </div>
+          <div id="questions"></div>
+        </div>
+
+        <!-- RIGHT: readout -->
+        <div class="readout" id="readout">
+          <div class="r-top">
+            <span class="r-label">AI Exposure Index</span>
+            <span class="r-live"><span class="dot" id="liveDot"></span> Live</span>
+          </div>
+          <div class="score-row">
+            <span class="score-num" id="scoreNum">0</span>
+            <span class="score-unit">/100</span>
+          </div>
+          <div class="score-band" id="scoreBand">—</div>
+          <div class="score-desc" id="scoreDesc">Pick a role to begin.</div>
+
+          <div class="gauge">
+            <div class="track"><div class="marker" id="marker" style="left:0%"></div></div>
+            <div class="ticks"><span>0</span><span>25</span><span>50</span><span>75</span><span>100</span></div>
+          </div>
+
+          <div class="r-foot">
+            <div class="m"><div class="k">Timeframe</div><div class="v" id="horizon">—</div></div>
+            <div class="m"><div class="k">What it means</div><div class="v" id="meaning">—</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Breakdown -->
+      <div class="breakdown">
+        <div class="bd exposed">
+          <h3>What AI is coming for <span class="tag">Exposed</span></h3>
+          <ul id="exposedList"></ul>
+        </div>
+        <div class="bd edge">
+          <h3>Your human edge <span class="tag">Holds</span></h3>
+          <ul id="edgeList"></ul>
+        </div>
+      </div>
+
+      <!-- How to stay ahead -->
+      <div class="ahead">
+        <div class="p-title">How to stay ahead</div>
+        <div class="p-sub">Exposure isn't a verdict — it's a map of where to move.</div>
+        <div class="moves" id="moves"></div>
+      </div>
+
+      <div class="actions">
+        <button class="btn-primary" id="copyBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy my result
+        </button>
+        <span class="copy-note" id="copyNote">Copied to clipboard ✓</span>
+      </div>
+
+      <p class="disc">This is a directional estimate, not a prediction or career advice. It reflects how much of a typical version of this role current and near-term AI can meaningfully do — how much the work <em>changes</em>, not whether the job disappears. Your skills, employer, and market matter more than any single number.</p>
+    </div>
+  </section>
+</main>
+
+<!-- FOOTER / METHOD -->
+<footer id="method">
+  <div class="wrap foot-grid">
+    <div class="method">
+      <span class="eyebrow">The method</span>
+      <h2>Jobs are bundles of tasks.</h2>
+      <p><b>AI doesn't replace jobs; it absorbs tasks.</b> Every role is a mix of things — some routine and digital, some physical, human, or high-stakes. The Exposure Index estimates what share of a role's typical tasks current and near-term AI can already do well, then lets you adjust for how your own day actually breaks down.</p>
+      <p>Scores lean on the pattern found across task-level automation research: language, data, and predictable digital work sits closest to what today's models are good at, while physical dexterity, real human trust, and accountable judgment stay hardest to automate.</p>
+      <div class="factors">
+        <div class="factor"><span class="arrow up">▲</span> Routine, repeatable, rule-based work</div>
+        <div class="factor"><span class="arrow up">▲</span> Text, code, images, and data analysis</div>
+        <div class="factor"><span class="arrow up">▲</span> Fully doable on a screen, no presence needed</div>
+        <div class="factor"><span class="arrow down">▼</span> In-person trust, care, and persuasion</div>
+        <div class="factor"><span class="arrow down">▼</span> Physical skill in unpredictable settings</div>
+        <div class="factor"><span class="arrow down">▼</span> High-stakes, accountable judgment</div>
+      </div>
+    </div>
+    <div class="foot-side">
+      <span class="eyebrow">Good to know</span>
+      <p>Numbers are estimates, not forecasts — treat them as a conversation starter, not a career decision. Everything runs in your browser; nothing you enter is sent anywhere or stored. No account, no tracking.</p>
+      <p style="margin-top:14px;">Don't see your exact title? Pick the closest one, or choose <b>“My role isn't listed”</b> and let the questions do the work.</p>
+    </div>
+  </div>
+  <div class="wrap foot-bar">
+    <span class="brand-name"><span class="brand-badge" style="width:24px;height:24px;font-size:11px;display:inline-grid;vertical-align:middle;margin-right:8px;border-radius:6px;">RL</span>RL Studio</span>
+    <small>Built as a no-backend tool · 2026</small>
+  </div>
+</footer>
+
+<script>
+/* ---------------------------------------------------------
+   AI EXPOSURE INDEX — RL Studio
+   All logic client-side. Data bundled below.
+   Scores are research-informed estimates (0 = safe, 100 = highly exposed).
+---------------------------------------------------------- */
+
+const JOBS = [
+  // --- Highly exposed: routine cognitive / language / data ---
+  {n:"Data entry clerk", c:"Admin & office", s:92, h:"Already changing", ex:["Typing and transcribing records","Moving data between systems","Formatting and cleaning spreadsheets","Basic form processing"], ed:["Catching messy real-world exceptions","Owning data-quality judgment calls"]},
+  {n:"Telemarketer", c:"Sales & support", s:90, h:"Already changing", ex:["Scripted outbound calls","Lead qualification","Follow-up messaging","Call logging"], ed:["Reading a room and building rapport","Handling emotionally charged objections"]},
+  {n:"Bookkeeper / accounting clerk", c:"Finance", s:85, h:"Already changing", ex:["Categorizing transactions","Reconciling accounts","Generating routine reports","Invoice processing"], ed:["Advising on grey-area decisions","Owning accuracy and compliance"]},
+  {n:"Translator", c:"Language & content", s:84, h:"Already changing", ex:["First-draft translation","Straightforward document conversion","Subtitling common content"], ed:["Nuance, tone, and cultural context","High-stakes legal and literary work"]},
+  {n:"Customer support rep", c:"Sales & support", s:82, h:"Already changing", ex:["Answering common questions","Ticket triage and routing","Drafting standard replies"], ed:["De-escalating angry customers","Handling novel, high-emotion cases"]},
+  {n:"Bank teller", c:"Finance", s:80, h:"3–6 years", ex:["Routine transactions","Balance and account queries","Standard paperwork"], ed:["Fraud judgment in person","Trust-based advice for anxious customers"]},
+  {n:"Insurance underwriter", c:"Finance", s:78, h:"3–6 years", ex:["Standard risk scoring","Rules-based approvals","Document review"], ed:["Complex, non-standard cases","Accountable final sign-off"]},
+  {n:"Copywriter / content writer", c:"Language & content", s:80, h:"Already changing", ex:["First-draft copy at scale","SEO and product descriptions","Rewrites and variations"], ed:["Original voice and strategy","Brand judgment and taste"]},
+  {n:"Proofreader / editor", c:"Language & content", s:74, h:"Already changing", ex:["Grammar and style fixes","Consistency checks","Basic fact flagging"], ed:["Structural and narrative editing","Judgment on what's worth saying"]},
+  {n:"Paralegal", c:"Legal", s:75, h:"3–6 years", ex:["Document review and summaries","Contract drafting from templates","Legal research first-pass"], ed:["Client judgment and strategy","Anything requiring accountability"]},
+  {n:"Market research analyst", c:"Business & strategy", s:72, h:"3–6 years", ex:["Survey and data summarizing","Report generation","Trend charts and recaps"], ed:["Framing the right questions","Turning data into a decision"]},
+
+  // --- High-ish: knowledge / creative, heavily augmentable ---
+  {n:"Software developer", c:"Tech & data", s:60, h:"Already changing", ex:["Boilerplate and glue code","Unit tests and docs","Bug triage and refactors"], ed:["System design and architecture","Judgment on tradeoffs and ownership","Understanding messy human requirements"]},
+  {n:"Web developer", c:"Tech & data", s:64, h:"Already changing", ex:["Standard layouts and components","CRUD features","Content and template work"], ed:["Complex product logic","Performance and edge-case judgment"]},
+  {n:"Data analyst", c:"Tech & data", s:68, h:"Already changing", ex:["Pulling and cleaning data","Standard dashboards","Routine SQL and summaries"], ed:["Asking the right business question","Knowing which numbers to trust"]},
+  {n:"Graphic designer", c:"Design & creative", s:68, h:"Already changing", ex:["Variations and resizing","Stock-style assets","First-draft layouts"], ed:["Brand systems and art direction","Taste, concept, and client judgment"]},
+  {n:"Illustrator", c:"Design & creative", s:70, h:"Already changing", ex:["Generic and stock illustration","Style variations","Quick concept art"], ed:["Distinctive personal style","Original ideas and commissioned vision"]},
+  {n:"UX / product designer", c:"Design & creative", s:52, h:"3–6 years", ex:["Wireframe variations","Copy and layout drafts","Design-system busywork"], ed:["User research and empathy","Product judgment and prioritization"]},
+  {n:"Photographer", c:"Design & creative", s:55, h:"3–7 years", ex:["Stock and product shots","Basic editing and retouching","Generated placeholder imagery"], ed:["Live events and real moments","Direction, relationships, and taste"]},
+  {n:"Video editor", c:"Design & creative", s:60, h:"Already changing", ex:["Rough cuts and captions","Repurposing and resizing","Basic color and audio"], ed:["Story and pacing judgment","High-end creative direction"]},
+  {n:"Journalist / reporter", c:"Language & content", s:66, h:"3–6 years", ex:["Routine and templated stories","Summaries and aggregation","First drafts"], ed:["Original reporting and sources","Investigation and accountability"]},
+  {n:"Marketer", c:"Business & strategy", s:64, h:"Already changing", ex:["Campaign copy and assets","A/B variations","Reporting and recaps"], ed:["Strategy and positioning","Reading the market and taste"]},
+  {n:"Financial analyst", c:"Finance", s:64, h:"3–6 years", ex:["Model building and updates","Data gathering","Standard reporting"], ed:["Judgment under uncertainty","Persuading stakeholders"]},
+  {n:"Recruiter", c:"People & HR", s:60, h:"3–6 years", ex:["Sourcing and screening","Scheduling and outreach","Job-post drafting"], ed:["Reading fit and motivation","Closing and relationship-building"]},
+  {n:"Accountant", c:"Finance", s:58, h:"3–6 years", ex:["Routine statements and filings","Reconciliation","Standard tax prep"], ed:["Advisory and planning","Accountable sign-off and ethics"]},
+  {n:"Administrative assistant", c:"Admin & office", s:66, h:"3–6 years", ex:["Scheduling and inbox triage","Drafting routine docs","Note-taking and summaries"], ed:["Anticipating an exec's real needs","Discretion and human coordination"]},
+
+  // --- Medium ---
+  {n:"Lawyer", c:"Legal", s:50, h:"3–7 years", ex:["Research and document drafting","Contract review at scale","Precedent search"], ed:["Courtroom and negotiation","Accountable legal judgment","Client trust"]},
+  {n:"Teacher", c:"Education & care", s:40, h:"5–10 years", ex:["Lesson-plan drafts","Grading routine work","Material generation"], ed:["Motivating and mentoring kids","Classroom presence and care"]},
+  {n:"Product manager", c:"Business & strategy", s:46, h:"3–7 years", ex:["Doc and spec drafting","Data summaries","Backlog grooming"], ed:["Deciding what to build and why","Aligning people and owning outcomes"]},
+  {n:"Project manager", c:"Business & strategy", s:50, h:"3–7 years", ex:["Status reports and updates","Scheduling and tracking","Meeting notes"], ed:["Navigating people and conflict","Judgment when plans break"]},
+  {n:"Architect", c:"Skilled & technical", s:48, h:"5–10 years", ex:["Drafting and iterations","Code-compliance checks","Renderings and variations"], ed:["Creative vision and client trust","Accountable structural judgment"]},
+  {n:"Sales representative", c:"Sales & support", s:44, h:"3–7 years", ex:["Outreach and follow-ups","Proposal drafts","CRM admin"], ed:["Building real relationships","Reading and closing complex deals"]},
+  {n:"Consultant", c:"Business & strategy", s:48, h:"3–7 years", ex:["Research and deck-building","Data analysis","Benchmarking"], ed:["Trusted judgment and framing","Persuasion and client relationships"]},
+  {n:"HR manager", c:"People & HR", s:52, h:"3–7 years", ex:["Policy and doc drafting","Screening and scheduling","Routine queries"], ed:["Sensitive people situations","Culture and trust"]},
+  {n:"Doctor / physician", c:"Education & care", s:36, h:"5–12 years", ex:["Note-taking and paperwork","Triage support and summaries","Image and test flagging"], ed:["Bedside judgment and trust","Accountable diagnosis and care"]},
+  {n:"Pharmacist", c:"Education & care", s:44, h:"5–10 years", ex:["Dispensing checks","Interaction screening","Inventory and records"], ed:["Patient counseling","Accountable clinical judgment"]},
+  {n:"Radiologist", c:"Education & care", s:50, h:"5–10 years", ex:["First-pass image reads","Routine measurements","Reporting drafts"], ed:["Ambiguous and rare cases","Accountable diagnosis"]},
+  {n:"Scientist / researcher", c:"Tech & data", s:46, h:"3–7 years", ex:["Literature review","Data analysis and coding","Draft writing"], ed:["Novel hypotheses and design","Judgment on what matters"]},
+  {n:"Real estate agent", c:"Sales & support", s:48, h:"3–7 years", ex:["Listings and descriptions","Lead follow-up","Paperwork"], ed:["Local knowledge and trust","Negotiation and hand-holding"]},
+
+  // --- Lower: physical / trust / unpredictable / care ---
+  {n:"Nurse", c:"Education & care", s:26, h:"7–12 years", ex:["Charting and documentation","Scheduling support","Routine monitoring alerts"], ed:["Hands-on care and comfort","Split-second bedside judgment"]},
+  {n:"Therapist / counselor", c:"Education & care", s:24, h:"7–15 years", ex:["Notes and admin","Resource suggestions","Scheduling"], ed:["Deep human trust and empathy","Reading unspoken cues"]},
+  {n:"Social worker", c:"Education & care", s:22, h:"7–15 years", ex:["Case documentation","Form and report drafting","Resource lookup"], ed:["Human judgment in crisis","Trust with vulnerable people"]},
+  {n:"Electrician", c:"Skilled trades", s:18, h:"10+ years", ex:["Estimating and paperwork","Manual and code lookup"], ed:["Hands-on work in tight, unique spaces","Safety judgment and troubleshooting"]},
+  {n:"Plumber", c:"Skilled trades", s:15, h:"10+ years", ex:["Quotes and scheduling","Parts lookup"], ed:["Physical work in unpredictable sites","On-the-spot problem solving"]},
+  {n:"Carpenter", c:"Skilled trades", s:20, h:"10+ years", ex:["Cut lists and estimates","Design references"], ed:["Precise hands-on craft","Adapting to real-world materials"]},
+  {n:"Mechanic", c:"Skilled trades", s:24, h:"7–12 years", ex:["Diagnostic code lookup","Manuals and estimates"], ed:["Physical repair and feel","Diagnosing odd, real-world faults"]},
+  {n:"Chef / cook", c:"Skilled & technical", s:28, h:"7–12 years", ex:["Menu ideas and recipes","Ordering and inventory","Prep planning"], ed:["Taste, timing, and execution","Physical kitchen craft under pressure"]},
+  {n:"Hairdresser / barber", c:"Personal service", s:12, h:"Low / long-term", ex:["Booking and reminders","Style inspiration"], ed:["Hands-on skill and precision","Personal relationships and trust"]},
+  {n:"Personal trainer", c:"Personal service", s:26, h:"5–10 years", ex:["Generic plan generation","Progress tracking","Scheduling"], ed:["In-person motivation","Form correction and adaptation"]},
+  {n:"Truck driver", c:"Logistics & transport", s:42, h:"7–15 years", ex:["Route optimization","Logging and paperwork"], ed:["Handling roads, weather, and the unexpected","Loading, inspection, last-mile realities"]},
+  {n:"Delivery driver", c:"Logistics & transport", s:34, h:"5–12 years", ex:["Route planning","Dispatch and tracking"], ed:["Doorstep navigation and judgment","Handling real-world hiccups"]},
+  {n:"Warehouse worker", c:"Logistics & transport", s:40, h:"5–12 years", ex:["Inventory tracking","Pick-list generation"], ed:["Handling odd items and edge cases","Physical flexibility on the floor"]},
+  {n:"Construction worker", c:"Skilled trades", s:20, h:"10+ years", ex:["Planning and estimates","Scheduling"], ed:["Physical work in changing sites","On-site adaptation and safety"]},
+  {n:"Farmer", c:"Skilled & technical", s:30, h:"7–15 years", ex:["Planning and forecasting","Record-keeping","Yield analysis"], ed:["Hands-on land and animal work","Judgment with weather and biology"]},
+  {n:"Police officer", c:"Public service", s:18, h:"10+ years", ex:["Report drafting","Records and lookup"], ed:["Physical presence and de-escalation","High-stakes human judgment"]},
+  {n:"Firefighter", c:"Public service", s:10, h:"Low / long-term", ex:["Reporting and scheduling","Training material"], ed:["Physical rescue in chaos","Life-and-death teamwork"]},
+  {n:"Pilot", c:"Logistics & transport", s:28, h:"10+ years", ex:["Flight planning support","Systems monitoring"], ed:["Accountable command","Handling emergencies and the unexpected"]},
+  {n:"Dentist", c:"Education & care", s:20, h:"7–12 years", ex:["Records and imaging support","Scheduling","Treatment-plan drafts"], ed:["Hands-on precision work","Patient trust and care"]},
+  {n:"Actor / performer", c:"Design & creative", s:34, h:"5–12 years", ex:["Generated background and extras","Voice and dubbing for some uses"], ed:["Live presence and range","Original, embodied performance"]},
+  {n:"Musician", c:"Design & creative", s:38, h:"3–10 years", ex:["Backing tracks and stock music","Demo and variation generation"], ed:["Live performance and artistry","Original voice and connection"]},
+
+  // fallback
+  {n:"My role isn't listed", c:"Custom", s:50, h:"Varies", ex:["The routine, digital, and repeatable parts of your day","Anything that's mostly text, data, or predictable output"], ed:["Work that needs presence, trust, or a human on the hook","Judgment, physical skill, and original thinking"]}
+];
+
+const QUESTIONS = [
+  {q:"How much of your work is routine and repeatable?", up:true, d:[-7,0,9]},
+  {q:"How much is producing text, code, images, or analyzing data?", up:true, d:[-7,0,9]},
+  {q:"How much can be done fully on a screen, with no need to be there in person?", up:true, d:[-6,0,8]},
+  {q:"How much depends on in-person trust, care, or persuasion?", up:false, d:[7,0,-10]},
+  {q:"How much needs hands-on physical skill in unpredictable settings?", up:false, d:[6,0,-10]},
+  {q:"How much is high-stakes judgment where a human has to be accountable?", up:false, d:[6,0,-9]}
+];
+const OPTS = ["Barely","Somewhat","A lot"];
+
+const BANDS = [
+  {max:29, name:"Low exposure", color:"var(--low)", meaning:"AI assists you", desc:"Most of what makes your work valuable is hard for AI to touch. Expect it to become a helper that clears busywork, not a replacement."},
+  {max:54, name:"Moderate exposure", color:"#5FB07A", meaning:"The role adapts", desc:"Real parts of your day are automatable, but the core holds. Your job shifts toward the pieces AI can't do — and toward directing AI on the pieces it can."},
+  {max:74, name:"High exposure", color:"var(--mid)", meaning:"The role gets reshaped", desc:"A large share of typical tasks are within reach of today's AI. The title may survive, but the work — and how many people do it — will change a lot."},
+  {max:100, name:"Very high exposure", color:"var(--high)", meaning:"Major disruption", desc:"Most core tasks are things current or near-term AI can already do well. Expect real pressure on this role. The move is toward the human edges — fast."}
+];
+
+/* Moves tailored by band index (0..3) plus universal ones */
+const MOVES = {
+  high:[ // shown for high / very-high (band 2,3)
+    ["01","<b>Become the one who directs the AI.</b> The person who reviews, corrects, and takes responsibility for AI output is worth more than the person doing the raw task."],
+    ["02","<b>Move up the value ladder.</b> Shift from producing outputs to owning outcomes — strategy, relationships, and the calls only a human can be accountable for."],
+    ["03","<b>Anchor to the human edges.</b> Double down on the parts of your work that need trust, presence, taste, or judgment. That's where you stay irreplaceable."],
+    ["04","<b>Use AI to do 10× more.</b> The people who thrive won't be the ones who resist it — they'll be the ones who use it to cover far more ground than before."]
+  ],
+  low:[ // shown for low / moderate (band 0,1)
+    ["01","<b>Let AI clear the busywork.</b> Hand off the routine, digital parts so you spend more time on the work that's actually yours."],
+    ["02","<b>Learn the tools anyway.</b> Even a safe role rewards the person who's fluent with AI — you'll be faster, and more valuable, than peers who aren't."],
+    ["03","<b>Deepen your human edge.</b> The trust, craft, and judgment at the core of your work only get more valuable as routine work gets cheap."],
+    ["04","<b>Watch the adjacent tasks.</b> The admin and digital edges of your job will change first — get ahead of those and you shape the change instead of reacting to it."]
+  ]
+};
+
+/* ---------------- State ---------------- */
+let current = null;               // selected job object
+let answers = [1,1,1,1,1,1];      // default "Somewhat"
+let activeIdx = -1;               // keyboard highlight in results
+
+/* ---------------- Elements ---------------- */
+const $ = s => document.querySelector(s);
+const searchEl = $("#search");
+const resultsEl = $("#results");
+const chipsEl = $("#chips");
+const analyzerEl = $("#analyzer");
+const questionsEl = $("#questions");
+
+/* ---------------- Suggested chips ---------------- */
+["Software developer","Graphic designer","Teacher","Nurse","Accountant","Marketer"].forEach(name=>{
+  const b=document.createElement("button");
+  b.className="chip"; b.textContent=name;
+  b.onclick=()=>selectJob(JOBS.find(j=>j.n===name));
+  chipsEl.appendChild(b);
+});
+
+/* ---------------- Search ---------------- */
+function renderResults(q){
+  const query=q.trim().toLowerCase();
+  let list = query
+    ? JOBS.filter(j=>j.n.toLowerCase().includes(query)||j.c.toLowerCase().includes(query))
+    : JOBS.slice(0,8);
+  // always keep the fallback reachable
+  if(query && !list.some(j=>j.c==="Custom")) list.push(JOBS[JOBS.length-1]);
+
+  activeIdx=-1;
+  if(list.length===0){
+    resultsEl.innerHTML=`<div class="res-empty">No exact match for “<b>${escapeHtml(q)}</b>.” Pick the closest role, or choose <b>My role isn't listed</b> and let the questions calibrate it.</div>`;
+    resultsEl.classList.add("open"); searchEl.setAttribute("aria-expanded","true");
+    return;
+  }
+  // group by category
+  const groups={};
+  list.forEach(j=>{(groups[j.c]=groups[j.c]||[]).push(j);});
+  let html="";
+  Object.keys(groups).forEach(cat=>{
+    html+=`<div class="res-group-label">${cat}</div>`;
+    groups[cat].forEach(j=>{
+      html+=`<button class="res-item" data-name="${escapeHtml(j.n)}"><span>${escapeHtml(j.n)}</span><span class="cat">${j.c==="Custom"?"":"idx "+j.s}</span></button>`;
+    });
+  });
+  resultsEl.innerHTML=html;
+  resultsEl.querySelectorAll(".res-item").forEach(el=>{
+    el.onclick=()=>selectJob(JOBS.find(j=>j.n===el.dataset.name));
+  });
+  resultsEl.classList.add("open"); searchEl.setAttribute("aria-expanded","true");
+}
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+searchEl.addEventListener("input",e=>renderResults(e.target.value));
+searchEl.addEventListener("focus",e=>{ if(!current) renderResults(e.target.value); });
+searchEl.addEventListener("keydown",e=>{
+  const items=[...resultsEl.querySelectorAll(".res-item")];
+  if(e.key==="ArrowDown"){e.preventDefault();activeIdx=Math.min(activeIdx+1,items.length-1);}
+  else if(e.key==="ArrowUp"){e.preventDefault();activeIdx=Math.max(activeIdx-1,0);}
+  else if(e.key==="Enter"){e.preventDefault(); if(items[activeIdx]) items[activeIdx].click(); else if(items[0]) items[0].click(); return;}
+  else return;
+  items.forEach((el,i)=>el.classList.toggle("active",i===activeIdx));
+  if(items[activeIdx]) items[activeIdx].scrollIntoView({block:"nearest"});
+});
+document.addEventListener("click",e=>{
+  if(!e.target.closest(".search-block")) { resultsEl.classList.remove("open"); searchEl.setAttribute("aria-expanded","false"); }
+});
+
+/* ---------------- Build questions ---------------- */
+function buildQuestions(){
+  questionsEl.innerHTML="";
+  QUESTIONS.forEach((qq,i)=>{
+    const wrap=document.createElement("div"); wrap.className="q";
+    const t=document.createElement("div"); t.className="q-text"; t.textContent=qq.q;
+    const seg=document.createElement("div"); seg.className="seg"; seg.setAttribute("role","group");
+    OPTS.forEach((opt,oi)=>{
+      const b=document.createElement("button");
+      b.type="button"; b.textContent=opt;
+      b.setAttribute("aria-pressed", answers[i]===oi ? "true":"false");
+      b.onclick=()=>{ answers[i]=oi; [...seg.children].forEach((c,ci)=>c.setAttribute("aria-pressed",ci===oi?"true":"false")); update(); };
+      seg.appendChild(b);
+    });
+    wrap.appendChild(t); wrap.appendChild(seg); questionsEl.appendChild(wrap);
+  });
+}
+
+/* ---------------- Scoring ---------------- */
+function computeScore(){
+  let s=current.s;
+  QUESTIONS.forEach((qq,i)=>{ s += qq.d[answers[i]]; });
+  return Math.max(4, Math.min(96, Math.round(s)));
+}
+function bandFor(score){ return BANDS.find(b=>score<=b.max); }
+
+/* ---------------- Select & render ---------------- */
+function selectJob(job){
+  if(!job) return;
+  current=job;
+  answers=[1,1,1,1,1,1];
+  searchEl.value=job.n==="My role isn't listed" ? "" : job.n;
+  resultsEl.classList.remove("open"); searchEl.setAttribute("aria-expanded","false");
+  $("#roleName").textContent=job.n==="My role isn't listed" ? "Your role" : job.n;
+  buildQuestions();
+  analyzerEl.classList.add("show");
+  update(true);
+  // scroll into view (below hero)
+  setTimeout(()=>{ analyzerEl.scrollIntoView({behavior:"smooth",block:"start"}); },60);
+}
+
+let animRAF=null;
+function animateNumber(el,to){
+  cancelAnimationFrame(animRAF);
+  const reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const from=parseInt(el.textContent)||0;
+  if(reduce){ el.textContent=to; return; }
+  const start=performance.now(), dur=650;
+  function step(t){
+    const p=Math.min(1,(t-start)/dur);
+    const eased=1-Math.pow(1-p,3);
+    el.textContent=Math.round(from+(to-from)*eased);
+    if(p<1) animRAF=requestAnimationFrame(step);
+  }
+  animRAF=requestAnimationFrame(step);
+}
+
+function update(){
+  if(!current) return;
+  const score=computeScore();
+  const band=bandFor(score);
+
+  animateNumber($("#scoreNum"),score);
+  const bandEl=$("#scoreBand"); bandEl.textContent=band.name; bandEl.style.color=band.color;
+  $("#scoreDesc").textContent=band.desc;
+  $("#marker").style.left=score+"%";
+  $("#liveDot").style.color=band.color; $("#liveDot").style.background=band.color;
+  $("#horizon").textContent=current.h;
+  $("#meaning").textContent=band.meaning;
+
+  // breakdown lists
+  fillList($("#exposedList"),current.ex);
+  fillList($("#edgeList"),current.ed);
+
+  // moves by band
+  const set = score>=55 ? MOVES.high : MOVES.low;
+  const mv=$("#moves"); mv.innerHTML="";
+  set.forEach(([n,txt])=>{
+    const d=document.createElement("div"); d.className="move";
+    d.innerHTML=`<span class="n">${n}</span><span class="mt">${txt}</span>`;
+    mv.appendChild(d);
+  });
+}
+function fillList(ul,items){
+  ul.innerHTML="";
+  items.forEach(it=>{ const li=document.createElement("li"); li.textContent=it; ul.appendChild(li); });
+}
+
+/* ---------------- Change role ---------------- */
+$("#changeJob").onclick=()=>{
+  current=null; searchEl.value="";
+  analyzerEl.classList.remove("show");
+  window.scrollTo({top:0,behavior:"smooth"});
+  setTimeout(()=>searchEl.focus(),400);
+};
+
+/* ---------------- Copy result ---------------- */
+$("#copyBtn").onclick=async()=>{
+  if(!current) return;
+  const score=computeScore(); const band=bandFor(score);
+  const role = current.n==="My role isn't listed" ? "My role" : current.n;
+  const text=`AI Exposure Index — ${role}\nScore: ${score}/100 (${band.name})\nTimeframe: ${current.h}\n\n${band.desc}\n\nMeasured with RL Studio's Exposure Index.`;
+  try{ await navigator.clipboard.writeText(text); }
+  catch(e){ /* fallback */ const ta=document.createElement("textarea"); ta.value=text; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); }
+  const note=$("#copyNote"); note.classList.add("show");
+  setTimeout(()=>note.classList.remove("show"),2200);
+};
+</script>
+</body>
+</html>
