@@ -3,7 +3,7 @@
 A no-backend web tool by **RL Studio**. Find your role, tune six questions to your real work, and get a task-level read on your AI exposure — what changes, what holds, and how to stay ahead.
 
 - **Zero backend** — a single `index.html`, all logic and data run in the browser
-- **60 built-in roles** with research-informed exposure scores, plus a custom fallback
+- **210 built-in roles** with research-informed exposure scores, plus a custom fallback
 - **Private by design** — nothing you enter is sent or stored anywhere
 
 ## Run locally

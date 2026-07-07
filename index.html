@@ -3,13 +3,102 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Will AI take your job? — Exposure Index by RL Studio</title>
-<meta name="description" content="A calm, task-level read on how exposed your job is to AI. Find your role, fine-tune it to your real work, and see what changes, what holds, and how to stay ahead." />
+
+<title>Will AI take your job? — AI Exposure Index by RL Studio</title>
+<meta name="description" content="Will AI take your job? Get a calm, task-level read on how exposed your role is to AI. Search 200+ jobs, tune six questions to your real work, and see what changes, what holds, and how to stay ahead — free, private, no signup." />
+<link rel="canonical" href="https://aijob-web.vercel.app/" />
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+<meta name="author" content="RL Studio" />
+<meta name="keywords" content="AI exposure, will AI take my job, AI job risk, automation risk, AI and jobs, job automation, future of work, AI exposure index" />
+<meta name="theme-color" content="#E9ECF2" />
 
 <!-- Open Graph / social sharing -->
-<meta property="og:title" content="Will AI take your job?" />
-<meta property="og:description" content="Find your role and get a task-level read on your AI exposure — what changes, what holds, and how to stay ahead. By RL Studio." />
+<meta property="og:site_name" content="AI Exposure Index" />
+<meta property="og:title" content="Will AI take your job? — AI Exposure Index" />
+<meta property="og:description" content="Find your role and get a task-level read on your AI exposure — what changes, what holds, and how to stay ahead. Free, private, no signup." />
 <meta property="og:type" content="website" />
+<meta property="og:url" content="https://aijob-web.vercel.app/" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:image" content="https://aijob-web.vercel.app/og-image.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="AI Exposure Index — a task-level read on how exposed your job is to AI." />
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Will AI take your job? — AI Exposure Index" />
+<meta name="twitter:description" content="A task-level read on your AI exposure — what changes, what holds, and how to stay ahead. Free, private, no signup." />
+<meta name="twitter:image" content="https://aijob-web.vercel.app/og-image.png" />
+<meta name="twitter:image:alt" content="AI Exposure Index — a task-level read on how exposed your job is to AI." />
+
+<!-- Structured data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "AI Exposure Index",
+      "url": "https://aijob-web.vercel.app/",
+      "description": "A task-level tool that estimates how exposed a job is to AI. Search 200+ roles, tune six questions to your real work, and get a directional AI exposure score with guidance on how to stay ahead.",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Any (web browser)",
+      "browserRequirements": "Requires JavaScript.",
+      "inLanguage": "en",
+      "isAccessibleForFree": true,
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "author": { "@type": "Organization", "name": "RL Studio" },
+      "publisher": { "@type": "Organization", "name": "RL Studio" }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Will AI take my job?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The honest answer is rarely a simple yes or no. AI comes for tasks, not titles — so the real question is how much of your day it can already do. The AI Exposure Index gives a task-level read: for your role it estimates what share of typical tasks current and near-term AI can meaningfully do, then lets you adjust for how your own work actually breaks down."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the AI Exposure Index?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It is a directional 0–100 score estimating how much of a role's typical tasks current and near-term AI can already do well. A low score means AI mostly assists you; a high score means the work — and how many people do it — is likely to change a lot. It measures how much the work changes, not whether the job disappears."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How is AI exposure calculated?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Every role is a bundle of tasks. The index estimates what share of a role's typical tasks today's AI can do, informed by task-level automation research: routine, text, code and data work sits closest to what models are good at, while physical dexterity, in-person trust, and accountable judgment stay hardest to automate. Six questions then fine-tune the score to your actual day."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which jobs are most exposed to AI?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Roles built on routine, digital, language and data work tend to score highest — for example data entry clerks, telemarketers, bookkeepers, translators, copywriters and customer support. Roles built on hands-on physical skill, in-person trust and high-stakes human judgment — such as nurses, electricians, plumbers and firefighters — tend to score lowest."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is the AI Exposure Index free and private?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. It is completely free with no account required. Everything runs in your browser — nothing you enter is sent to a server, tracked, or stored anywhere."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -316,6 +405,29 @@
   .copy-note{font-family:var(--f-mono);font-size:12px;color:var(--low);opacity:0;transition:opacity .2s;}
   .copy-note.show{opacity:1;}
 
+  /* Rank pill (inside dark readout) */
+  .rank-pill{
+    display:inline-flex;align-items:center;gap:8px;margin-top:16px;position:relative;
+    font-family:var(--f-mono);font-size:11px;letter-spacing:.05em;color:#C7CEDA;
+    background:rgba(255,255,255,.05);border:1px solid var(--instrument-line);
+    padding:7px 12px;border-radius:999px;
+  }
+  .rank-pill b{color:#fff;font-weight:700;}
+  .rank-pill svg{color:var(--instrument-muted);flex:none;}
+
+  /* Shareable card */
+  .sharecard{margin-top:26px;}
+  .sharecard .eyebrow{margin-bottom:12px;}
+  .card-frame{
+    border-radius:16px;overflow:hidden;border:1px solid var(--line);
+    box-shadow:var(--shadow-lift);max-width:600px;background:var(--surface-2);
+  }
+  .card-frame img{display:block;width:100%;height:auto;}
+
+  /* Share icon buttons */
+  .btn-ghost svg{flex:none;}
+  .btn-ghost.on-brand{border-color:var(--brand);color:var(--brand);background:var(--brand-wash);}
+
   /* Disclaimer inline */
   .disc{margin-top:18px;font-size:12.5px;color:var(--muted);max-width:70ch;line-height:1.5;}
 
@@ -336,6 +448,25 @@
   .foot-bar{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;padding:18px 0 34px;border-top:1px solid var(--line);}
   .foot-bar .brand-name{font-size:14px;}
   .foot-bar small{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;color:var(--faint);}
+
+  /* ---------- FAQ ---------- */
+  .faq{border-top:1px solid var(--line);}
+  .faq-inner{padding:48px 0 40px;}
+  .faq h2{font-family:var(--f-display);font-weight:600;font-size:20px;letter-spacing:-.02em;margin:14px 0 22px;}
+  .faq details{border-top:1px solid var(--line-2);}
+  .faq details:last-of-type{border-bottom:1px solid var(--line-2);}
+  .faq summary{
+    list-style:none;cursor:pointer;padding:16px 34px 16px 0;position:relative;
+    font-family:var(--f-display);font-weight:600;font-size:15.5px;color:var(--ink);letter-spacing:-.01em;
+  }
+  .faq summary::-webkit-details-marker{display:none;}
+  .faq summary::after{
+    content:"+";position:absolute;right:2px;top:50%;transform:translateY(-50%);
+    font-family:var(--f-mono);font-size:20px;color:var(--faint);font-weight:400;transition:transform .2s ease;
+  }
+  .faq details[open] summary::after{content:"–";}
+  .faq details[open] summary{color:var(--brand);}
+  .faq .faq-a{padding:0 0 18px;font-size:14.5px;color:var(--ink-soft);line-height:1.6;max-width:70ch;}
 
   :focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:6px;}
 
@@ -413,6 +544,11 @@
           <div class="score-band" id="scoreBand">—</div>
           <div class="score-desc" id="scoreDesc">Pick a role to begin.</div>
 
+          <div class="rank-pill" id="rankPill" hidden>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            <span id="rankText"></span>
+          </div>
+
           <div class="gauge">
             <div class="track"><div class="marker" id="marker" style="left:0%"></div></div>
             <div class="ticks"><span>0</span><span>25</span><span>50</span><span>75</span><span>100</span></div>
@@ -444,12 +580,34 @@
         <div class="moves" id="moves"></div>
       </div>
 
-      <div class="actions">
-        <button class="btn-primary" id="copyBtn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Copy my result
-        </button>
-        <span class="copy-note" id="copyNote">Copied to clipboard ✓</span>
+      <div class="sharecard">
+        <span class="eyebrow">Share your result</span>
+        <div class="card-frame">
+          <img id="cardImg" alt="Your AI exposure score card — download and share it." />
+        </div>
+        <div class="actions">
+          <button class="btn-primary" id="dlBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download card
+          </button>
+          <button class="btn-ghost" id="shareXBtn" title="Share on X">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.66l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            Post on X
+          </button>
+          <button class="btn-ghost" id="shareLiBtn" title="Share on LinkedIn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/></svg>
+            LinkedIn
+          </button>
+          <button class="btn-ghost" id="copyLinkBtn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            Copy link
+          </button>
+          <button class="btn-ghost" id="nativeBtn" hidden>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            Share…
+          </button>
+          <span class="copy-note" id="copyNote">Copied ✓</span>
+        </div>
       </div>
 
       <p class="disc">This is a directional estimate, not a prediction or career advice. It reflects how much of a typical version of this role current and near-term AI can meaningfully do — how much the work <em>changes</em>, not whether the job disappears. Your skills, employer, and market matter more than any single number.</p>
@@ -480,6 +638,38 @@
       <p style="margin-top:14px;">Don't see your exact title? Pick the closest one, or choose <b>“My role isn't listed”</b> and let the questions do the work.</p>
     </div>
   </div>
+  <div class="faq">
+    <div class="wrap faq-inner">
+      <span class="eyebrow">Common questions</span>
+      <h2>Will AI take your job? — the honest FAQ</h2>
+
+      <details>
+        <summary>Will AI take my job?</summary>
+        <div class="faq-a">The honest answer is rarely a simple yes or no. AI comes for <b>tasks</b>, not titles — so the real question is how much of your day it can already do. The AI Exposure Index gives a task-level read: for your role it estimates what share of typical tasks current and near-term AI can meaningfully do, then lets you adjust for how your own work actually breaks down.</div>
+      </details>
+
+      <details>
+        <summary>What is the AI Exposure Index?</summary>
+        <div class="faq-a">It's a directional 0–100 score estimating how much of a role's typical tasks current and near-term AI can already do well. A low score means AI mostly assists you; a high score means the work — and how many people do it — is likely to change a lot. It measures how much the work <em>changes</em>, not whether the job disappears.</div>
+      </details>
+
+      <details>
+        <summary>How is AI exposure calculated?</summary>
+        <div class="faq-a">Every role is a bundle of tasks. The index estimates what share of a role's typical tasks today's AI can do, informed by task-level automation research: routine, text, code and data work sits closest to what models are good at, while physical dexterity, in-person trust, and accountable judgment stay hardest to automate. Six questions then fine-tune the score to your actual day.</div>
+      </details>
+
+      <details>
+        <summary>Which jobs are most exposed to AI?</summary>
+        <div class="faq-a">Roles built on routine, digital, language and data work tend to score highest — for example data entry clerks, telemarketers, bookkeepers, translators, copywriters and customer support. Roles built on hands-on physical skill, in-person trust and high-stakes human judgment — such as nurses, electricians, plumbers and firefighters — tend to score lowest.</div>
+      </details>
+
+      <details>
+        <summary>Is the AI Exposure Index free and private?</summary>
+        <div class="faq-a">Yes. It's completely free with no account required. Everything runs in your browser — nothing you enter is sent to a server, tracked, or stored anywhere.</div>
+      </details>
+    </div>
+  </div>
+
   <div class="wrap foot-bar">
     <span class="brand-name"><span class="brand-badge" style="width:24px;height:24px;font-size:11px;display:inline-grid;vertical-align:middle;margin-right:8px;border-radius:6px;">RL</span>RL Studio</span>
     <small>Built as a no-backend tool · 2026</small>
@@ -560,6 +750,193 @@ const JOBS = [
   {n:"Dentist", c:"Education & care", s:20, h:"7–12 years", ex:["Records and imaging support","Scheduling","Treatment-plan drafts"], ed:["Hands-on precision work","Patient trust and care"]},
   {n:"Actor / performer", c:"Design & creative", s:34, h:"5–12 years", ex:["Generated background and extras","Voice and dubbing for some uses"], ed:["Live presence and range","Original, embodied performance"]},
   {n:"Musician", c:"Design & creative", s:38, h:"3–10 years", ex:["Backing tracks and stock music","Demo and variation generation"], ed:["Live performance and artistry","Original voice and connection"]},
+
+  // --- Tech & data (extended) ---
+  {n:"Data scientist", c:"Tech & data", s:58, h:"Already changing", ex:["Model prototyping and tuning","Exploratory analysis and charts","Data cleaning pipelines"], ed:["Framing problems worth solving","Judgment on causality and bias"]},
+  {n:"Machine learning engineer", c:"Tech & data", s:52, h:"3–6 years", ex:["Training pipeline boilerplate","Experiment tracking and evals","Standard model deployment"], ed:["Novel architecture judgment","Debugging weird real-world failures"]},
+  {n:"DevOps / SRE engineer", c:"Tech & data", s:55, h:"3–6 years", ex:["Config and IaC boilerplate","Runbook drafts and alert triage","CI/CD wiring"], ed:["Incident command under pressure","Architecture and reliability tradeoffs"]},
+  {n:"QA / test engineer", c:"Tech & data", s:70, h:"Already changing", ex:["Test case generation","Regression scripts","Bug report drafting"], ed:["Exploratory testing intuition","Knowing what users actually break"]},
+  {n:"Cybersecurity analyst", c:"Tech & data", s:45, h:"3–7 years", ex:["Log triage and alert screening","Report drafting","Vulnerability scanning"], ed:["Adversarial thinking","Incident judgment and accountability"]},
+  {n:"IT support specialist", c:"Tech & data", s:64, h:"Already changing", ex:["Password resets and how-tos","Ticket triage","Known-issue fixes"], ed:["Hands-on hardware fixes","Calming frustrated humans"]},
+  {n:"System administrator", c:"Tech & data", s:56, h:"3–6 years", ex:["Routine patching and scripts","Monitoring and backups","Documentation"], ed:["Legacy system surgery","Judgment when production is down"]},
+  {n:"Database administrator", c:"Tech & data", s:58, h:"3–6 years", ex:["Query tuning suggestions","Backup automation","Schema drafts"], ed:["High-stakes data recovery","Performance judgment at scale"]},
+  {n:"Mobile app developer", c:"Tech & data", s:62, h:"Already changing", ex:["Standard screens and CRUD","Boilerplate and tests","Store listing assets"], ed:["Product feel and performance","Complex native edge cases"]},
+  {n:"Game developer", c:"Tech & data", s:55, h:"3–6 years", ex:["Asset pipeline scripts","Boilerplate systems code","Placeholder content"], ed:["Fun — design instinct","Deep engine and performance work"]},
+  {n:"Data engineer", c:"Tech & data", s:56, h:"3–6 years", ex:["Pipeline boilerplate","Schema mapping and ETL","Data quality checks"], ed:["Architecture for messy real data","Judgment on tradeoffs"]},
+  {n:"BI analyst", c:"Tech & data", s:68, h:"Already changing", ex:["Dashboard building","Recurring reports","SQL for standard asks"], ed:["Asking the question behind the ask","Storytelling that moves decisions"]},
+
+  // --- Language & content (extended) ---
+  {n:"Technical writer", c:"Language & content", s:74, h:"Already changing", ex:["First-draft docs from specs","API reference generation","Style cleanup"], ed:["Understanding real user confusion","Information architecture"]},
+  {n:"Social media manager", c:"Language & content", s:64, h:"Already changing", ex:["Post drafting and variations","Scheduling and recaps","Caption and hashtag ideas"], ed:["Voice, timing, and cultural instinct","Community trust and crisis calls"]},
+  {n:"SEO specialist", c:"Language & content", s:72, h:"Already changing", ex:["Keyword research at scale","Meta and content optimization","Audit reports"], ed:["Strategy as search itself shifts to AI","Judgment on brand vs. traffic"]},
+  {n:"PR / communications specialist", c:"Language & content", s:55, h:"3–6 years", ex:["Press release drafts","Media list building","Coverage summaries"], ed:["Relationships with journalists","Crisis judgment under fire"]},
+  {n:"Grant writer", c:"Language & content", s:72, h:"Already changing", ex:["Proposal first drafts","Boilerplate sections","Prospect research"], ed:["Funder relationships","Strategy on what to ask for"]},
+  {n:"Novelist / fiction author", c:"Language & content", s:50, h:"3–10 years", ex:["Genre-formula drafting","Synopses and blurbs","Continuity checks"], ed:["A voice readers seek out","Lived experience and originality"]},
+  {n:"Screenwriter", c:"Language & content", s:52, h:"3–7 years", ex:["Formatted drafts and coverage","Dialogue variations","Loglines"], ed:["Original stories that get made","Rooms, notes, and relationships"]},
+  {n:"Interpreter (live)", c:"Language & content", s:56, h:"3–7 years", ex:["Prepared remarks and captions","Common phrase interpretation"], ed:["High-stakes nuance in the room","Cultural judgment in real time"]},
+
+  // --- Design & creative (extended) ---
+  {n:"Animator", c:"Design & creative", s:60, h:"Already changing", ex:["In-betweening and cleanup","Simple loops and variations","Previz drafts"], ed:["Timing and acting choices","Signature style"]},
+  {n:"3D artist", c:"Design & creative", s:58, h:"Already changing", ex:["Base meshes and textures","Stock-style assets","Variations"], ed:["Art direction and taste","Complex custom work"]},
+  {n:"Art director", c:"Design & creative", s:42, h:"3–7 years", ex:["Mood boards and comps","Asset variations","Brief drafting"], ed:["Taste and brand judgment","Directing humans and AI alike"]},
+  {n:"Interior designer", c:"Design & creative", s:40, h:"5–10 years", ex:["Concept boards and renders","Furniture sourcing lists","Layout options"], ed:["Reading how clients actually live","On-site judgment and craft"]},
+  {n:"Fashion designer", c:"Design & creative", s:45, h:"5–10 years", ex:["Print and pattern variations","Trend recaps","Tech pack drafts"], ed:["Taste and point of view","Fit, fabric, and construction feel"]},
+  {n:"Industrial designer", c:"Design & creative", s:46, h:"5–10 years", ex:["Concept sketches and renders","CAD iterations","Spec documentation"], ed:["Physical ergonomics judgment","Manufacturing reality"]},
+  {n:"Motion designer", c:"Design & creative", s:58, h:"Already changing", ex:["Template animations","Resizes and versions","Storyboard drafts"], ed:["Craft and timing","Concept and art direction"]},
+  {n:"Voice actor", c:"Design & creative", s:62, h:"Already changing", ex:["E-learning and IVR reads","Placeholder and bulk narration"], ed:["Emotional range and acting","A voice people license by name"]},
+  {n:"Music producer", c:"Design & creative", s:50, h:"3–7 years", ex:["Beat and stem generation","Mixing presets and cleanup","Reference tracks"], ed:["Taste and artist chemistry","A sound people want"]},
+  {n:"Sound engineer", c:"Design & creative", s:45, h:"5–10 years", ex:["Cleanup and mastering presets","Routine mixes"], ed:["Live rooms and real acoustics","Golden ears and judgment"]},
+  {n:"Tattoo artist", c:"Design & creative", s:10, h:"Low / long-term", ex:["Design references and mockups","Booking and deposits"], ed:["Permanent art on real skin","Trust and a personal style"]},
+
+  // --- Business & strategy (extended) ---
+  {n:"Business analyst", c:"Business & strategy", s:62, h:"Already changing", ex:["Requirements drafts","Process documentation","Data summaries"], ed:["Reading what stakeholders mean","Judgment on what matters"]},
+  {n:"Operations manager", c:"Business & strategy", s:42, h:"3–7 years", ex:["Reporting and dashboards","SOP drafting","Scheduling"], ed:["Leading people through change","Judgment when things break"]},
+  {n:"Supply chain analyst", c:"Business & strategy", s:58, h:"3–6 years", ex:["Demand forecasting","Inventory reports","Scenario modeling"], ed:["Supplier relationships","Crisis rerouting judgment"]},
+  {n:"Procurement specialist", c:"Business & strategy", s:56, h:"3–6 years", ex:["RFP drafting and comparison","Vendor research","Contract summaries"], ed:["Negotiation leverage","Supplier trust"]},
+  {n:"Customer success manager", c:"Business & strategy", s:48, h:"3–7 years", ex:["Onboarding docs and check-ins","Usage reports","Renewal reminders"], ed:["Relationships that survive problems","Reading churn risk between the lines"]},
+  {n:"Account manager", c:"Business & strategy", s:46, h:"3–7 years", ex:["Status updates and recaps","Upsell proposals","CRM hygiene"], ed:["Trust built over dinners and crises","Navigating client politics"]},
+  {n:"Event planner", c:"Business & strategy", s:35, h:"5–10 years", ex:["Vendor research and comparisons","Schedules and checklists","Invitations and copy"], ed:["Day-of orchestration in chaos","Taste and human logistics"]},
+  {n:"Founder / entrepreneur", c:"Business & strategy", s:28, h:"5–10 years", ex:["Decks, docs, and prototypes","Market research","Ops busywork"], ed:["Vision, risk, and persuasion","Being the accountable human"]},
+  {n:"Executive / CEO", c:"Business & strategy", s:25, h:"7–12 years", ex:["Briefing summaries","Draft communications","Analysis prep"], ed:["Accountable judgment","Leading humans through uncertainty"]},
+
+  // --- Finance (extended) ---
+  {n:"Auditor", c:"Finance", s:66, h:"3–6 years", ex:["Sampling and testing","Workpaper drafting","Anomaly flagging"], ed:["Professional skepticism","Accountable sign-off"]},
+  {n:"Tax preparer", c:"Finance", s:78, h:"Already changing", ex:["Standard returns","Document intake","Deduction checklists"], ed:["Complex cross-border cases","Advice clients trust"]},
+  {n:"Actuary", c:"Finance", s:56, h:"3–7 years", ex:["Model runs and updates","Standard valuations","Report drafting"], ed:["Judgment on assumptions","Accountable pricing calls"]},
+  {n:"Loan officer", c:"Finance", s:66, h:"3–6 years", ex:["Application processing","Document verification","Standard risk scoring"], ed:["Judgment on edge cases","Local relationships"]},
+  {n:"Financial advisor", c:"Finance", s:50, h:"3–7 years", ex:["Portfolio reports","Plan drafts","Market summaries"], ed:["Trust in scary markets","Knowing the family behind the money"]},
+  {n:"Investment banker", c:"Finance", s:46, h:"3–7 years", ex:["Pitch decks and comps","Model building","Diligence summaries"], ed:["Relationships and trust","Deal judgment and negotiation"]},
+  {n:"Claims adjuster", c:"Finance", s:68, h:"3–6 years", ex:["Document review","Standard claim assessment","Payout calculations"], ed:["Fraud instinct on messy cases","In-person inspections"]},
+  {n:"Payroll specialist", c:"Finance", s:76, h:"Already changing", ex:["Payroll runs and corrections","Compliance checks","Report generation"], ed:["Odd cases across jurisdictions","Being the trusted human when pay is wrong"]},
+  {n:"Economist", c:"Finance", s:48, h:"3–7 years", ex:["Data analysis and charts","Literature summaries","Forecast model runs"], ed:["Judgment on what models miss","Framing questions that matter"]},
+
+  // --- Sales & support (extended) ---
+  {n:"Call center agent", c:"Sales & support", s:84, h:"Already changing", ex:["Scripted inbound calls","Standard resolutions","After-call notes"], ed:["The cases scripts can't handle","Human patience that de-escalates"]},
+  {n:"Retail cashier", c:"Sales & support", s:68, h:"3–7 years", ex:["Checkout and payment","Price lookups","Basic returns"], ed:["Theft instinct and edge cases","A human face for the store"]},
+  {n:"Retail salesperson", c:"Sales & support", s:45, h:"5–10 years", ex:["Inventory questions","Product comparisons","Restock and ordering"], ed:["Reading a customer in person","Fitting and hands-on help"]},
+  {n:"Store manager", c:"Sales & support", s:36, h:"5–10 years", ex:["Scheduling and inventory reports","Sales recaps","Order drafting"], ed:["Leading a floor team","Judgment with real customers"]},
+  {n:"Insurance agent", c:"Sales & support", s:58, h:"3–6 years", ex:["Quote generation","Policy comparisons","Renewal reminders"], ed:["Trust at claim time","Reading a family's real risk"]},
+  {n:"Car salesperson", c:"Sales & support", s:42, h:"5–10 years", ex:["Inventory matching","Financing paperwork","Follow-up messages"], ed:["The test-drive relationship","Negotiation in person"]},
+  {n:"Travel agent", c:"Sales & support", s:70, h:"Already changing", ex:["Itinerary building","Booking and rebooking","Destination research"], ed:["Taste for complex trips","A human when travel breaks"]},
+
+  // --- Admin & office (extended) ---
+  {n:"Receptionist", c:"Admin & office", s:66, h:"3–6 years", ex:["Call routing and scheduling","Visitor check-in","Standard inquiries"], ed:["Being the welcoming human face","Judgment on who really needs what"]},
+  {n:"Executive assistant", c:"Admin & office", s:56, h:"3–6 years", ex:["Calendar and inbox triage","Travel booking","Meeting notes"], ed:["Anticipation and discretion","Gatekeeping judgment"]},
+  {n:"Legal secretary", c:"Admin & office", s:72, h:"Already changing", ex:["Document formatting and filing","Scheduling and correspondence","Template drafting"], ed:["Firm-specific judgment","Confidential relationships"]},
+  {n:"Medical records clerk", c:"Admin & office", s:80, h:"Already changing", ex:["Records filing and coding","Data entry","Release processing"], ed:["Judgment on messy charts","Privacy edge cases"]},
+  {n:"Transcriptionist", c:"Admin & office", s:90, h:"Already changing", ex:["Audio transcription","Formatting and timestamps","Draft cleanup"], ed:["Terrible audio and rare accents","Specialized domain accuracy"]},
+  {n:"Court reporter", c:"Admin & office", s:72, h:"3–6 years", ex:["Real-time transcription","Transcript formatting"], ed:["Certified accuracy on the record","Courtroom presence"]},
+  {n:"Dispatcher / scheduler", c:"Admin & office", s:62, h:"3–6 years", ex:["Route and shift scheduling","Status updates","Log keeping"], ed:["Judgment in emergencies","Juggling humans in real time"]},
+
+  // --- Legal (extended) ---
+  {n:"Judge", c:"Legal", s:18, h:"10+ years", ex:["Case summaries and research","Draft opinions"], ed:["Accountable justice","Human judgment society demands"]},
+  {n:"Compliance officer", c:"Legal", s:55, h:"3–6 years", ex:["Policy drafting","Monitoring and flagging","Training materials"], ed:["Grey-area judgment","Accountability regulators demand"]},
+  {n:"Contract manager", c:"Legal", s:62, h:"3–6 years", ex:["Contract review and redlines","Clause libraries","Renewal tracking"], ed:["Negotiation judgment","Relationship context"]},
+  {n:"Patent attorney", c:"Legal", s:45, h:"3–7 years", ex:["Prior-art search","Application drafting","Office action responses"], ed:["Claim strategy","Accountable counsel"]},
+  {n:"Legal researcher", c:"Legal", s:70, h:"Already changing", ex:["Case law search and summaries","Memo drafting","Citation checking"], ed:["Novel argument spotting","Judgment on what persuades"]},
+
+  // --- People & HR (extended) ---
+  {n:"HR coordinator", c:"People & HR", s:62, h:"3–6 years", ex:["Onboarding paperwork","Scheduling and records","Policy answers"], ed:["Sensitive conversations","Reading team dynamics"]},
+  {n:"Talent sourcer", c:"People & HR", s:70, h:"Already changing", ex:["Profile searching at scale","Outreach sequences","Screening summaries"], ed:["Selling a real human on a job","Instinct for fit"]},
+  {n:"Corporate trainer", c:"People & HR", s:50, h:"3–7 years", ex:["Course material drafting","Quiz generation","Session summaries"], ed:["Live facilitation energy","Reading a room that's lost"]},
+  {n:"Career coach", c:"People & HR", s:40, h:"5–10 years", ex:["Resume and letter drafts","Interview question prep","Market research"], ed:["Accountability and motivation","Hearing what's unsaid"]},
+
+  // --- Education & care (extended) ---
+  {n:"University professor", c:"Education & care", s:40, h:"5–10 years", ex:["Lecture and syllabus drafts","Grading support","Literature summaries"], ed:["Original research direction","Mentorship that changes lives"]},
+  {n:"Tutor", c:"Education & care", s:52, h:"3–6 years", ex:["Practice problems and explanations","Progress tracking","Lesson plans"], ed:["Motivation and confidence building","Spotting why a student is stuck"]},
+  {n:"Preschool teacher", c:"Education & care", s:12, h:"Low / long-term", ex:["Activity planning","Progress notes"], ed:["Care, safety, and warmth","Development judgment in person"]},
+  {n:"Childcare worker", c:"Education & care", s:8, h:"Low / long-term", ex:["Schedules and updates for parents"], ed:["Hands-on care and trust","Constant physical presence"]},
+  {n:"School counselor", c:"Education & care", s:22, h:"7–15 years", ex:["Scheduling and documentation","Resource lookup"], ed:["Trust of struggling kids","Crisis judgment"]},
+  {n:"Librarian", c:"Education & care", s:45, h:"5–10 years", ex:["Catalog and metadata work","Research queries","Summaries"], ed:["Community programming","Judgment on sources and people"]},
+  {n:"Special education teacher", c:"Education & care", s:15, h:"Low / long-term", ex:["IEP paperwork","Material adaptation"], ed:["Individualized human patience","Reading nonverbal needs"]},
+  {n:"Veterinarian", c:"Education & care", s:26, h:"7–12 years", ex:["Records and notes","Diagnostic support","Client instructions"], ed:["Hands-on animal care","Judgment patients can't describe"]},
+  {n:"Physical therapist", c:"Education & care", s:14, h:"Low / long-term", ex:["Exercise plan drafts","Progress documentation"], ed:["Hands-on treatment","Reading pain and motivation"]},
+  {n:"Occupational therapist", c:"Education & care", s:15, h:"Low / long-term", ex:["Documentation and plans"], ed:["Hands-on adaptation","Home and life judgment"]},
+  {n:"Speech therapist", c:"Education & care", s:28, h:"7–12 years", ex:["Exercise generation","Progress notes","Practice apps"], ed:["In-person therapeutic bond","Diagnosis nuance"]},
+  {n:"Psychologist", c:"Education & care", s:26, h:"7–15 years", ex:["Notes and assessment drafting","Research summaries"], ed:["Deep therapeutic alliance","Clinical judgment"]},
+  {n:"Psychiatrist", c:"Education & care", s:28, h:"7–15 years", ex:["Documentation","Medication interaction checks"], ed:["Accountable prescribing judgment","Trust in crisis"]},
+  {n:"Surgeon", c:"Education & care", s:14, h:"10+ years", ex:["Op note drafting","Imaging review support","Scheduling"], ed:["Hands inside a human body","Split-second judgment"]},
+  {n:"Dental hygienist", c:"Education & care", s:15, h:"Low / long-term", ex:["Records and reminders","X-ray flagging"], ed:["Hands-on cleaning care","Chair-side trust"]},
+  {n:"Paramedic / EMT", c:"Education & care", s:10, h:"Low / long-term", ex:["Run reports","Protocol lookup"], ed:["Life-saving hands in chaos","Scene judgment"]},
+  {n:"Medical lab technician", c:"Education & care", s:50, h:"3–7 years", ex:["Sample analysis automation","Result flagging","Documentation"], ed:["Odd sample judgment","Quality accountability"]},
+  {n:"Dietitian / nutritionist", c:"Education & care", s:40, h:"5–10 years", ex:["Meal plan drafts","Nutrient analysis","Education materials"], ed:["Behavior change coaching","Medical nuance in person"]},
+
+  // --- Skilled trades (extended) ---
+  {n:"Welder", c:"Skilled trades", s:20, h:"10+ years", ex:["Job quotes and specs","Parts lookup"], ed:["Precision hands in odd positions","Judgment on materials and safety"]},
+  {n:"HVAC technician", c:"Skilled trades", s:14, h:"10+ years", ex:["Scheduling and quotes","Manual lookup","Diagnostic codes"], ed:["Crawlspace problem-solving","On-site fixes"]},
+  {n:"Landscaper", c:"Skilled trades", s:16, h:"10+ years", ex:["Design mockups","Quotes and plant lists"], ed:["Physical work in real terrain","Craft and adaptation"]},
+  {n:"House painter", c:"Skilled trades", s:18, h:"10+ years", ex:["Quotes and color previews"], ed:["Prep and finish craft","Real houses, real mess"]},
+  {n:"Roofer", c:"Skilled trades", s:12, h:"10+ years", ex:["Estimates and material lists"], ed:["Dangerous physical precision","Weather and structure judgment"]},
+  {n:"Machinist", c:"Skilled trades", s:32, h:"7–12 years", ex:["CAM programming assists","Spec documentation"], ed:["Tolerances by feel","Setup judgment"]},
+  {n:"Tailor / seamstress", c:"Skilled trades", s:22, h:"10+ years", ex:["Pattern drafting support","Orders and bookings"], ed:["Fit on a real body","Hand craft"]},
+  {n:"Locksmith", c:"Skilled trades", s:15, h:"10+ years", ex:["Scheduling and quotes"], ed:["Physical finesse on-site","Trust in emergencies"]},
+  {n:"Auto body technician", c:"Skilled trades", s:22, h:"7–12 years", ex:["Damage estimates from photos","Parts ordering"], ed:["Physical repair craft","Color and finish judgment"]},
+  {n:"Elevator technician", c:"Skilled trades", s:13, h:"10+ years", ex:["Maintenance logs","Diagnostic lookup"], ed:["Safety-critical hands-on work","Legacy system judgment"]},
+
+  // --- Engineering ---
+  {n:"Civil engineer", c:"Skilled & technical", s:40, h:"5–10 years", ex:["Drafting and calculations","Compliance checks","Report writing"], ed:["Site judgment","Accountable stamped drawings"]},
+  {n:"Mechanical engineer", c:"Skilled & technical", s:44, h:"5–10 years", ex:["CAD iterations","Simulation runs","Documentation"], ed:["Physical intuition","Design tradeoff judgment"]},
+  {n:"Electrical engineer", c:"Skilled & technical", s:44, h:"5–10 years", ex:["Schematic drafts","Simulation and checks","Documentation"], ed:["Debugging real hardware","Safety-critical judgment"]},
+  {n:"Chemical engineer", c:"Skilled & technical", s:42, h:"5–10 years", ex:["Process modeling","Documentation","Data analysis"], ed:["Plant-floor judgment","Safety accountability"]},
+  {n:"Aerospace engineer", c:"Skilled & technical", s:40, h:"5–10 years", ex:["Simulation and analysis","Documentation","Design iterations"], ed:["Certification accountability","System-level judgment"]},
+  {n:"Surveyor", c:"Skilled & technical", s:42, h:"5–10 years", ex:["Data processing","Plat drafting","Records research"], ed:["Field work on real terrain","Boundary judgment"]},
+  {n:"Quality inspector", c:"Skilled & technical", s:52, h:"3–7 years", ex:["Visual inspection automation","Report generation","Spec checks"], ed:["Judgment on borderline calls","Process instinct"]},
+  {n:"Environmental scientist", c:"Skilled & technical", s:42, h:"5–10 years", ex:["Data analysis and reports","Permit drafting","Monitoring summaries"], ed:["Field sampling judgment","Stakeholder trust"]},
+
+  // --- Science & research ---
+  {n:"Biologist", c:"Science & research", s:42, h:"5–10 years", ex:["Literature review","Data analysis","Grant drafting"], ed:["Novel experiment design","Wet-lab hands"]},
+  {n:"Chemist", c:"Science & research", s:44, h:"5–10 years", ex:["Reaction prediction","Data analysis","Documentation"], ed:["Bench technique","Judgment on surprises"]},
+  {n:"Statistician", c:"Science & research", s:60, h:"3–6 years", ex:["Standard analyses","Code and charts","Report drafting"], ed:["Judgment on messy design","Knowing when the model lies"]},
+  {n:"Historian", c:"Science & research", s:46, h:"5–10 years", ex:["Source summaries","Draft writing","Archive search"], ed:["Original interpretation","Archival instinct"]},
+  {n:"Archaeologist", c:"Science & research", s:25, h:"10+ years", ex:["Cataloging and documentation","Site reports","Analysis"], ed:["Field excavation","Interpretation from fragments"]},
+
+  // --- Media & performance ---
+  {n:"News anchor", c:"Media & performance", s:42, h:"3–7 years", ex:["Script drafting","Routine update reads"], ed:["Live judgment and trust","Presence people tune in for"]},
+  {n:"Radio / podcast host", c:"Media & performance", s:38, h:"5–10 years", ex:["Show notes and editing","Episode summaries","Ad reads"], ed:["A voice and personality people love","Live conversation chemistry"]},
+  {n:"Film director", c:"Media & performance", s:28, h:"7–12 years", ex:["Storyboards and previz","Script coverage","Scheduling"], ed:["Vision and taste","Leading humans on set"]},
+  {n:"Cinematographer", c:"Media & performance", s:35, h:"5–10 years", ex:["Shot list drafts","Look references","Color pipeline"], ed:["Light on real faces","On-set judgment"]},
+  {n:"Film / TV producer", c:"Media & performance", s:36, h:"5–10 years", ex:["Budgets and schedules","Coverage and notes","Logistics"], ed:["Deal-making and relationships","Crisis management"]},
+  {n:"DJ", c:"Media & performance", s:30, h:"5–10 years", ex:["Setlist suggestions","Mashup stems","Promo posts"], ed:["Reading a live floor","Presence and brand"]},
+
+  // --- Hospitality & food ---
+  {n:"Waiter / server", c:"Hospitality & food", s:12, h:"Low / long-term", ex:["Order taking and payment","Reservation management"], ed:["Hospitality humans return for","Hustle in a packed room"]},
+  {n:"Bartender", c:"Hospitality & food", s:15, h:"Low / long-term", ex:["Inventory and ordering","Recipe lookup"], ed:["Craft, speed, and regulars","Reading the room at midnight"]},
+  {n:"Barista", c:"Hospitality & food", s:22, h:"7–12 years", ex:["Order taking","Inventory","Loyalty promos"], ed:["Latte art and consistency","The 7am human moment"]},
+  {n:"Hotel receptionist", c:"Hospitality & food", s:52, h:"3–6 years", ex:["Check-in and booking","Standard requests","Upsell offers"], ed:["Judgment with difficult guests","Local warmth"]},
+  {n:"Flight attendant", c:"Hospitality & food", s:18, h:"10+ years", ex:["Announcements and paperwork","Scheduling"], ed:["Safety in emergencies","Calm authority in a metal tube"]},
+  {n:"Tour guide", c:"Hospitality & food", s:32, h:"5–10 years", ex:["Itinerary and script drafting","Booking and logistics"], ed:["Live storytelling","Handling groups in the wild"]},
+  {n:"Baker", c:"Hospitality & food", s:28, h:"7–12 years", ex:["Recipe scaling and costing","Ordering","Social posts"], ed:["Dough by feel","4am craft"]},
+  {n:"Butcher", c:"Hospitality & food", s:18, h:"10+ years", ex:["Ordering and inventory","Pricing"], ed:["Knife craft","Judgment on quality"]},
+
+  // --- Personal service (extended) ---
+  {n:"Esthetician", c:"Personal service", s:8, h:"Low / long-term", ex:["Booking and reminders","Product suggestions"], ed:["Hands-on skin care","Personal trust"]},
+  {n:"Nail technician", c:"Personal service", s:7, h:"Low / long-term", ex:["Booking","Design inspiration"], ed:["Precise handwork","Regulars and rapport"]},
+  {n:"Makeup artist", c:"Personal service", s:15, h:"10+ years", ex:["Look references","Booking"], ed:["Faces are all different","Occasion trust"]},
+  {n:"Massage therapist", c:"Personal service", s:6, h:"Low / long-term", ex:["Booking and notes"], ed:["Therapeutic touch","Reading tension"]},
+  {n:"Housekeeper / cleaner", c:"Personal service", s:10, h:"Low / long-term", ex:["Scheduling and supplies"], ed:["Physical work in real homes","Trust with keys"]},
+  {n:"Janitor / custodian", c:"Personal service", s:12, h:"Low / long-term", ex:["Supply ordering","Scheduling"], ed:["Physical variety no robot handles","Building knowledge"]},
+  {n:"Security guard", c:"Personal service", s:32, h:"5–12 years", ex:["Monitoring and alerts","Incident reports","Access logs"], ed:["Physical presence and deterrence","Judgment in confrontation"]},
+  {n:"Nanny", c:"Personal service", s:5, h:"Low / long-term", ex:["Schedules and updates"], ed:["Deep family trust","Full-presence care"]},
+  {n:"Pet groomer", c:"Personal service", s:8, h:"Low / long-term", ex:["Booking and reminders"], ed:["Hands on wriggling animals","Owner trust"]},
+  {n:"Wedding planner", c:"Personal service", s:32, h:"5–10 years", ex:["Vendor research","Budgets and timelines","Inspiration boards"], ed:["Day-of command","Emotional chops with families"]},
+
+  // --- Logistics & transport (extended) ---
+  {n:"Taxi / rideshare driver", c:"Logistics & transport", s:52, h:"5–12 years", ex:["Routing and dispatch","Pricing"], ed:["Edge-case streets and passengers","The human touch on a hard day"]},
+  {n:"Bus driver", c:"Logistics & transport", s:42, h:"7–12 years", ex:["Route planning","Logs"], ed:["Safety with real passengers","Judgment in traffic chaos"]},
+  {n:"Courier / messenger", c:"Logistics & transport", s:38, h:"5–12 years", ex:["Route optimization","Tracking updates"], ed:["Buildings, doors, and humans","The last 50 feet"]},
+  {n:"Forklift operator", c:"Logistics & transport", s:36, h:"5–12 years", ex:["Inventory scanning","Task assignment"], ed:["Odd loads in tight spaces","Floor safety instinct"]},
+  {n:"Train operator", c:"Logistics & transport", s:45, h:"7–15 years", ex:["Scheduling and monitoring","Logs"], ed:["Accountable safety judgment","Emergencies on the line"]},
+  {n:"Air traffic controller", c:"Logistics & transport", s:28, h:"10+ years", ex:["Flow optimization support","Routine handoffs"], ed:["Life-critical accountability","Calm in overload"]},
+  {n:"Postal worker", c:"Logistics & transport", s:42, h:"5–12 years", ex:["Sorting automation","Route optimization"], ed:["Every porch is different","Neighborhood knowledge"]},
+
+  // --- Public service (extended) ---
+  {n:"Soldier / military", c:"Public service", s:18, h:"10+ years", ex:["Logistics and paperwork","Intel summaries","Training materials"], ed:["Physical presence in the field","Accountability under fire"]},
+  {n:"Detective / investigator", c:"Public service", s:26, h:"7–15 years", ex:["Records search and cross-reference","Report drafting","Footage review"], ed:["Interviews and instinct","Accountable case judgment"]},
+  {n:"Correctional officer", c:"Public service", s:18, h:"10+ years", ex:["Reports and logs","Monitoring support"], ed:["Physical presence and de-escalation","Judgment with volatile humans"]},
+  {n:"Urban planner", c:"Public service", s:44, h:"5–10 years", ex:["Zoning analysis","Report and plan drafting","Public comment summaries"], ed:["Community trust and politics","Judgment on real neighborhoods"]},
+  {n:"Politician", c:"Public service", s:12, h:"Low / long-term", ex:["Speech and statement drafts","Policy summaries","Constituent replies"], ed:["Votes are for humans","Accountability and handshakes"]},
+  {n:"Clergy / religious leader", c:"Public service", s:8, h:"Low / long-term", ex:["Sermon research and drafts","Scheduling","Newsletters"], ed:["Presence at life's biggest moments","A community's trust"]},
+  {n:"Sports coach", c:"Public service", s:20, h:"10+ years", ex:["Practice plans","Video analysis","Stats"], ed:["Motivation and locker-room presence","Reading athletes"]},
 
   // fallback
   {n:"My role isn't listed", c:"Custom", s:50, h:"Varies", ex:["The routine, digital, and repeatable parts of your day","Anything that's mostly text, data, or predictable output"], ed:["Work that needs presence, trust, or a human on the hook","Judgment, physical skill, and original thinking"]}
@@ -693,9 +1070,38 @@ function computeScore(){
 }
 function bandFor(score){ return BANDS.find(b=>score<=b.max); }
 
+/* Band colors as hex (canvas can't read CSS vars) */
+const BAND_HEX={"Low exposure":"#12A67C","Moderate exposure":"#5FB07A","High exposure":"#E39A2B","Very high exposure":"#E5484D"};
+
+/* Rank among real roles (excludes the custom fallback) */
+const REAL_JOBS=JOBS.filter(j=>j.c!=="Custom");
+function rankInfo(score){
+  const lessExposed=REAL_JOBS.filter(j=>j.s<score).length;
+  const moreExposed=REAL_JOBS.filter(j=>j.s>score).length;
+  // adjusted scores can fall outside the base-score range — keep rank within [1, total]
+  return {pct:Math.round(lessExposed/REAL_JOBS.length*100), rank:Math.min(moreExposed+1,REAL_JOBS.length), total:REAL_JOBS.length};
+}
+
+/* ---------------- Deep-link URL state ---------------- */
+function slugify(s){ return s.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,""); }
+function jobSlug(job){ return job.c==="Custom" ? "custom" : slugify(job.n); }
+const SLUGS={}; JOBS.forEach(j=>{ SLUGS[jobSlug(j)]=j; });
+function roleLabel(job){ return job.c==="Custom" ? "My job" : job.n; }
+function syncURL(){
+  if(!current){ history.replaceState(null,"",location.pathname); return; }
+  const p=new URLSearchParams(); p.set("job",jobSlug(current)); p.set("a",answers.join(""));
+  history.replaceState(null,"",location.pathname+"?"+p.toString());
+}
+function shareURL(){ return location.href; }
+function shareText(){
+  const score=computeScore(), band=bandFor(score);
+  return `My job "${roleLabel(current)}" scored ${score}/100 on the AI Exposure Index — ${band.name}. Will AI take yours?`;
+}
+
 /* ---------------- Select & render ---------------- */
-function selectJob(job){
+function selectJob(job, opts){
   if(!job) return;
+  opts=opts||{};
   current=job;
   answers=[1,1,1,1,1,1];
   searchEl.value=job.n==="My role isn't listed" ? "" : job.n;
@@ -704,8 +1110,9 @@ function selectJob(job){
   buildQuestions();
   analyzerEl.classList.add("show");
   update(true);
-  // scroll into view (below hero)
-  setTimeout(()=>{ analyzerEl.scrollIntoView({behavior:"smooth",block:"start"}); },60);
+  if(opts.scroll!==false){
+    setTimeout(()=>{ analyzerEl.scrollIntoView({behavior:"smooth",block:"start"}); },60);
+  }
 }
 
 let animRAF=null;
@@ -749,6 +1156,15 @@ function update(){
     d.innerHTML=`<span class="n">${n}</span><span class="mt">${txt}</span>`;
     mv.appendChild(d);
   });
+
+  // rank / percentile
+  const ri=rankInfo(score);
+  $("#rankPill").hidden=false;
+  $("#rankText").innerHTML=`More exposed than <b>${ri.pct}%</b> of jobs · <b>#${ri.rank}</b> of ${ri.total}`;
+
+  // shareable card + deep link
+  renderCard(score,band,ri);
+  syncURL();
 }
 function fillList(ul,items){
   ul.innerHTML="";
@@ -759,21 +1175,164 @@ function fillList(ul,items){
 $("#changeJob").onclick=()=>{
   current=null; searchEl.value="";
   analyzerEl.classList.remove("show");
+  $("#rankPill").hidden=true;
+  history.replaceState(null,"",location.pathname);
   window.scrollTo({top:0,behavior:"smooth"});
   setTimeout(()=>searchEl.focus(),400);
 };
 
-/* ---------------- Copy result ---------------- */
-$("#copyBtn").onclick=async()=>{
+/* ---------------- Shareable score card (canvas) ---------------- */
+const CARD_W=1200, CARD_H=630;
+const cardCanvas=document.createElement("canvas");
+cardCanvas.width=CARD_W; cardCanvas.height=CARD_H;
+let fontsReady=false;
+if(document.fonts&&document.fonts.ready){ document.fonts.ready.then(()=>{ fontsReady=true; if(current) update(); }); }
+
+function roundRect(ctx,x,y,w,h,r){
+  ctx.beginPath(); ctx.moveTo(x+r,y);
+  ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath();
+}
+function fitFont(ctx,text,family,weight,start,min,maxW){
+  let size=start;
+  do{ ctx.font=`${weight} ${size}px ${family}`; if(ctx.measureText(text).width<=maxW) break; size-=2; }while(size>min);
+  return size;
+}
+function renderCard(score,band,ri){
+  const ctx=cardCanvas.getContext("2d");
+  const disp="'Space Grotesk', system-ui, sans-serif";
+  const mono="'Space Mono', ui-monospace, monospace";
+  const body="'Inter', system-ui, sans-serif";
+  const INK="#141922", INKSOFT="#3A424F", MUTED="#68717F", FAINT="#98A1AF";
+  const BRAND="#2233E6", INSTR="#12151D", INSTRMUT="#8A94A6";
+  const bandCol=BAND_HEX[band.name]||"#E39A2B";
+
+  // background + soft glows
+  ctx.fillStyle="#E9ECF2"; ctx.fillRect(0,0,CARD_W,CARD_H);
+  let g=ctx.createRadialGradient(1080,40,0,1080,40,560);
+  g.addColorStop(0,"rgba(34,51,230,.16)"); g.addColorStop(1,"rgba(34,51,230,0)");
+  ctx.fillStyle=g; ctx.fillRect(0,0,CARD_W,CARD_H);
+  g=ctx.createRadialGradient(60,600,0,60,600,520);
+  g.addColorStop(0,"rgba(18,166,124,.13)"); g.addColorStop(1,"rgba(18,166,124,0)");
+  ctx.fillStyle=g; ctx.fillRect(0,0,CARD_W,CARD_H);
+
+  const PAD=76;
+  try{ ctx.letterSpacing="2.5px"; }catch(e){}
+  ctx.textBaseline="alphabetic";
+  ctx.fillStyle=MUTED; ctx.font=`400 19px ${mono}`;
+  ctx.fillText("AI EXPOSURE INDEX  ·  2026",PAD,104);
+  try{ ctx.letterSpacing="0px"; }catch(e){}
+
+  // role name (wrap up to 2 lines)
+  const role=roleLabel(current);
+  const maxW=560;
+  let fs=fitFont(ctx,role,disp,700,72,40,maxW);
+  ctx.fillStyle=INK; ctx.font=`700 ${fs}px ${disp}`;
+  const words=role.split(" "); const lines=[]; let line="";
+  words.forEach(w=>{ const t=line?line+" "+w:w; if(ctx.measureText(t).width>maxW&&line){lines.push(line);line=w;}else line=t; });
+  if(line)lines.push(line);
+  let ty=190; lines.slice(0,2).forEach(ln=>{ ctx.fillText(ln,PAD,ty); ty+=fs+6; });
+
+  // sub verdict
+  ctx.fillStyle=INKSOFT; ctx.font=`400 24px ${body}`;
+  ctx.fillText("Will AI take your job?",PAD,ty+18);
+  ctx.fillStyle=MUTED; ctx.font=`400 19px ${body}`;
+  ctx.fillText(`Ranked #${ri.rank} of ${ri.total} roles for AI exposure.`,PAD,ty+52);
+
+  // brand footer
+  const by=CARD_H-70;
+  roundRect(ctx,PAD,by,42,42,10); ctx.fillStyle=INSTR; ctx.fill();
+  ctx.fillStyle="#fff"; ctx.font=`700 19px ${mono}`; ctx.textAlign="center";
+  ctx.fillText("RL",PAD+21,by+28); ctx.textAlign="left";
+  ctx.fillStyle=INK; ctx.font=`700 25px ${disp}`; ctx.fillText("RL Studio",PAD+58,by+29);
+  const rlW=ctx.measureText("RL Studio").width;
+  ctx.fillStyle=MUTED; ctx.font=`400 21px ${body}`;
+  ctx.fillText("   ·  aijob-web.vercel.app",PAD+58+rlW,by+29);
+
+  // instrument card (right)
+  const cx=700, cy=150, cw=424, chh=330;
+  roundRect(ctx,cx,cy,cw,chh,24); ctx.fillStyle=INSTR; ctx.fill();
+  g=ctx.createRadialGradient(cx+cw,cy,0,cx+cw,cy,cw);
+  g.addColorStop(0,"rgba(34,51,230,.28)"); g.addColorStop(1,"rgba(34,51,230,0)");
+  ctx.save(); roundRect(ctx,cx,cy,cw,chh,24); ctx.clip(); ctx.fillStyle=g; ctx.fillRect(cx,cy,cw,chh); ctx.restore();
+  const ip=34;
+  try{ ctx.letterSpacing="2px"; }catch(e){}
+  ctx.fillStyle=INSTRMUT; ctx.font=`400 18px ${mono}`;
+  ctx.fillText("AI EXPOSURE INDEX",cx+ip,cy+42);
+  try{ ctx.letterSpacing="0px"; }catch(e){}
+  ctx.beginPath(); ctx.arc(cx+cw-ip-4,cy+38,5,0,7); ctx.fillStyle=bandCol; ctx.fill();
+  // number
+  ctx.fillStyle="#fff"; ctx.font=`700 128px ${mono}`;
+  ctx.fillText(String(score),cx+ip,cy+178);
+  const nW=ctx.measureText(String(score)).width;
+  ctx.fillStyle=INSTRMUT; ctx.font=`400 30px ${mono}`;
+  ctx.fillText("/100",cx+ip+nW+12,cy+178);
+  // band
+  ctx.fillStyle=bandCol; ctx.font=`700 30px ${disp}`;
+  ctx.fillText(band.name,cx+ip,cy+228);
+  // gauge
+  const gx=cx+ip, gw=cw-ip*2, gy=cy+chh-52, gh=12;
+  const grad=ctx.createLinearGradient(gx,0,gx+gw,0);
+  grad.addColorStop(0,"#12A67C"); grad.addColorStop(.22,"#12A67C");
+  grad.addColorStop(.52,"#E39A2B"); grad.addColorStop(.82,"#E5484D"); grad.addColorStop(1,"#E5484D");
+  roundRect(ctx,gx,gy,gw,gh,6); ctx.fillStyle=grad; ctx.fill();
+  const mx=gx+gw*(score/100);
+  roundRect(ctx,mx-3,gy-6,6,gh+12,3); ctx.fillStyle="#fff"; ctx.fill();
+
+  // push to preview <img>
+  $("#cardImg").src=cardCanvas.toDataURL("image/png");
+}
+function cardBlob(){ return new Promise(res=>cardCanvas.toBlob(res,"image/png")); }
+
+/* ---------------- Share actions ---------------- */
+function flashNote(msg){ const n=$("#copyNote"); n.textContent=msg; n.classList.add("show"); setTimeout(()=>n.classList.remove("show"),2200); }
+
+$("#dlBtn").onclick=async()=>{
   if(!current) return;
-  const score=computeScore(); const band=bandFor(score);
-  const role = current.n==="My role isn't listed" ? "My role" : current.n;
-  const text=`AI Exposure Index — ${role}\nScore: ${score}/100 (${band.name})\nTimeframe: ${current.h}\n\n${band.desc}\n\nMeasured with RL Studio's Exposure Index.`;
-  try{ await navigator.clipboard.writeText(text); }
-  catch(e){ /* fallback */ const ta=document.createElement("textarea"); ta.value=text; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); }
-  const note=$("#copyNote"); note.classList.add("show");
-  setTimeout(()=>note.classList.remove("show"),2200);
+  const blob=await cardBlob(); const url=URL.createObjectURL(blob);
+  const a=document.createElement("a"); a.href=url; a.download=`ai-exposure-${jobSlug(current)}.png`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+  flashNote("Card downloaded ✓");
 };
+$("#shareXBtn").onclick=()=>{
+  const u=`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText())}&url=${encodeURIComponent(shareURL())}&hashtags=WillAITakeMyJob,AI`;
+  window.open(u,"_blank","noopener");
+};
+$("#shareLiBtn").onclick=()=>{
+  const u=`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareURL())}`;
+  window.open(u,"_blank","noopener");
+};
+$("#copyLinkBtn").onclick=async()=>{
+  try{ await navigator.clipboard.writeText(shareURL()); }
+  catch(e){ const ta=document.createElement("textarea"); ta.value=shareURL(); document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); }
+  flashNote("Link copied ✓");
+};
+// Native share (mobile) — share the image + text when supported
+if(navigator.share){
+  const nb=$("#nativeBtn"); nb.hidden=false;
+  nb.onclick=async()=>{
+    try{
+      const blob=await cardBlob();
+      const file=new File([blob],`ai-exposure-${jobSlug(current)}.png`,{type:"image/png"});
+      if(navigator.canShare&&navigator.canShare({files:[file]})){
+        await navigator.share({files:[file],text:shareText()+" "+shareURL()});
+      }else{
+        await navigator.share({title:"AI Exposure Index",text:shareText(),url:shareURL()});
+      }
+    }catch(e){}
+  };
+}
+
+/* ---------------- Init from deep link ---------------- */
+(function initFromURL(){
+  const p=new URLSearchParams(location.search);
+  const slug=p.get("job"); if(!slug) return;
+  const job=SLUGS[slug]; if(!job) return;
+  selectJob(job,{scroll:false});
+  const a=(p.get("a")||"").slice(0,6);
+  if(/^[0-2]{6}$/.test(a)){ answers=a.split("").map(Number); buildQuestions(); update(); }
+})();
 </script>
 </body>
 </html>
