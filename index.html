@@ -9,7 +9,7 @@
 <link rel="canonical" href="https://aijob-web.vercel.app/" />
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
 <meta name="author" content="RL Studio" />
-<meta name="keywords" content="AI exposure, will AI take my job, AI job risk, automation risk, AI and jobs, job automation, future of work, AI exposure index" />
+<meta name="keywords" content="AI exposure, will AI take my job, AI job risk, automation risk, AI and jobs, job automation, future of work, AI exposure index, AI会取代我的工作吗, AI失业, 人工智能与就业, AI取代职业" />
 <meta name="theme-color" content="#E9ECF2" />
 
 <!-- Open Graph / social sharing -->
@@ -258,7 +258,7 @@
     overflow:hidden;
     display:none;
     position:absolute;left:0;right:0;z-index:20;
-    max-height:340px;overflow-y:auto;
+    max-height:420px;overflow-y:auto;
   }
   .results.open{display:block;}
   .res-group-label{
@@ -271,7 +271,12 @@
     font-size:15px;color:var(--ink);
   }
   .res-item:hover,.res-item.active{background:var(--surface-2);}
-  .res-item .cat{font-family:var(--f-mono);font-size:10.5px;color:var(--faint);letter-spacing:.04em;text-transform:uppercase;}
+  .res-item .cat{font-family:var(--f-mono);font-size:10.5px;color:var(--faint);letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;}
+  .res-item mark{background:var(--brand-wash);color:var(--brand);border-radius:3px;padding:0 1px;}
+  .res-item .zhn{color:var(--muted);font-size:13px;margin-left:6px;}
+  .res-item.res-cat-row .cat-name{font-weight:600;}
+  .res-item.res-cat-row .cat{color:var(--muted);}
+  .res-item.res-back{color:var(--brand);font-weight:600;font-size:13.5px;border-bottom:1px solid var(--line-2);}
   .res-empty{padding:16px;color:var(--muted);font-size:14px;}
   .res-empty b{color:var(--ink);}
 
@@ -498,7 +503,7 @@
       <div class="search-block">
         <div class="search-field">
           <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-          <input id="search" type="text" autocomplete="off" placeholder="Type your job title…" aria-label="Search your job title" aria-expanded="false" aria-controls="results" />
+          <input id="search" type="text" autocomplete="off" placeholder="Type your job title… 支持中文" aria-label="Search your job title (English or Chinese)" aria-expanded="false" aria-controls="results" />
           <span class="search-hint">↵ to select</span>
         </div>
         <div class="results" id="results" role="listbox" aria-label="Job results"></div>
@@ -995,39 +1000,368 @@ const questionsEl = $("#questions");
   b.onclick=()=>selectJob(JOBS.find(j=>j.n===name));
   chipsEl.appendChild(b);
 });
+// Browse-all entry point
+{
+  const b=document.createElement("button");
+  b.className="chip"; b.textContent=`Browse all ${JOBS.length-1} ↓`;
+  b.onclick=()=>{ renderResults(""); searchEl.focus(); };
+  chipsEl.appendChild(b);
+}
 
 /* ---------------- Search ---------------- */
-function renderResults(q){
-  const query=q.trim().toLowerCase();
-  let list = query
-    ? JOBS.filter(j=>j.n.toLowerCase().includes(query)||j.c.toLowerCase().includes(query))
-    : JOBS.slice(0,8);
-  // always keep the fallback reachable
-  if(query && !list.some(j=>j.c==="Custom")) list.push(JOBS[JOBS.length-1]);
-
-  activeIdx=-1;
-  if(list.length===0){
-    resultsEl.innerHTML=`<div class="res-empty">No exact match for “<b>${escapeHtml(q)}</b>.” Pick the closest role, or choose <b>My role isn't listed</b> and let the questions calibrate it.</div>`;
-    resultsEl.classList.add("open"); searchEl.setAttribute("aria-expanded","true");
-    return;
+/* Informal titles people actually type → canonical role names */
+const ALIASES={
+  "programmer":["Software developer"],"coder":["Software developer"],"software engineer":["Software developer"],
+  "swe":["Software developer"],"dev":["Software developer","Web developer","Mobile app developer"],
+  "frontend":["Web developer"],"front-end":["Web developer"],"backend":["Software developer"],"fullstack":["Software developer"],
+  "ios":["Mobile app developer"],"android":["Mobile app developer"],"app developer":["Mobile app developer"],
+  "ai engineer":["Machine learning engineer"],"ml engineer":["Machine learning engineer"],
+  "sysadmin":["System administrator"],"sre":["DevOps / SRE engineer"],"devops":["DevOps / SRE engineer"],
+  "tester":["QA / test engineer"],"qa":["QA / test engineer"],
+  "pm":["Product manager","Project manager"],"product owner":["Product manager"],
+  "attorney":["Lawyer"],"counsel":["Lawyer"],
+  "gp":["Doctor / physician"],"physician":["Doctor / physician"],
+  "shrink":["Therapist / counselor","Psychologist"],"counselor":["Therapist / counselor","School counselor"],
+  "prof":["University professor"],"lecturer":["University professor"],
+  "waitress":["Waiter / server"],"server":["Waiter / server"],"barman":["Bartender"],
+  "hairstylist":["Hairdresser / barber"],"stylist":["Hairdresser / barber"],"barber":["Hairdresser / barber"],
+  "cop":["Police officer"],"policeman":["Police officer"],"army":["Soldier / military"],
+  "cashier":["Retail cashier","Bank teller"],"shop assistant":["Retail salesperson"],
+  "salesman":["Sales representative","Car salesperson"],
+  "uber":["Taxi / rideshare driver"],"lyft":["Taxi / rideshare driver"],"cab":["Taxi / rideshare driver"],
+  "trucker":["Truck driver"],"driver":["Truck driver","Delivery driver","Taxi / rideshare driver","Bus driver"],
+  "customer service":["Customer support rep","Call center agent"],"support":["Customer support rep","IT support specialist"],
+  "banker":["Investment banker","Bank teller","Loan officer"],
+  "realtor":["Real estate agent"],"broker":["Real estate agent","Insurance agent"],
+  "vet":["Veterinarian"],"emt":["Paramedic / EMT"],"ambulance":["Paramedic / EMT"],
+  "cook":["Chef / cook"],"pastor":["Clergy / religious leader"],"priest":["Clergy / religious leader"],"imam":["Clergy / religious leader"],
+  "ui":["UX / product designer"],"ux":["UX / product designer"],
+  "hr":["HR manager","HR coordinator"],"payroll":["Payroll specialist"],
+  "writer":["Copywriter / content writer","Technical writer","Novelist / fiction author"],
+  "youtuber":["Video editor","Social media manager"],"influencer":["Social media manager"],
+  "cleaner":["Housekeeper / cleaner","Janitor / custodian"],"maid":["Housekeeper / cleaner"],
+  "babysitter":["Nanny","Childcare worker"],"caregiver":["Childcare worker","Nurse"]
+};
+/* Chinese names & common informal titles → matched against CJK queries */
+const ZH={
+"Data entry clerk":["数据录入员","录入员"],
+"Telemarketer":["电话销售","电销"],
+"Bookkeeper / accounting clerk":["记账员","会计文员","出纳"],
+"Translator":["翻译","笔译","译员"],
+"Customer support rep":["客服","客服专员","售后客服"],
+"Bank teller":["银行柜员","柜员"],
+"Insurance underwriter":["保险核保员","核保"],
+"Copywriter / content writer":["文案","内容写手","文案策划"],
+"Proofreader / editor":["校对","编辑"],
+"Paralegal":["律师助理","法务助理"],
+"Market research analyst":["市场研究分析师","市场调研"],
+"Software developer":["程序员","软件工程师","码农","软件开发","后端开发"],
+"Web developer":["网页开发","前端","前端开发","前端工程师"],
+"Data analyst":["数据分析师","数据分析"],
+"Graphic designer":["平面设计师","美工","平面设计"],
+"Illustrator":["插画师","插画"],
+"UX / product designer":["交互设计师","产品设计师","UX设计师","用户体验设计"],
+"Photographer":["摄影师"],
+"Video editor":["视频剪辑","剪辑师","后期剪辑"],
+"Journalist / reporter":["记者","新闻记者"],
+"Marketer":["市场营销","营销专员","市场专员"],
+"Financial analyst":["金融分析师","财务分析师"],
+"Recruiter":["招聘专员","猎头","招聘"],
+"Accountant":["会计","会计师"],
+"Administrative assistant":["行政助理","行政专员","行政"],
+"Lawyer":["律师"],
+"Teacher":["教师","老师","中学老师","小学老师"],
+"Product manager":["产品经理"],
+"Project manager":["项目经理"],
+"Architect":["建筑师","建筑设计师"],
+"Sales representative":["销售代表","销售","业务员"],
+"Consultant":["咨询顾问","咨询师","顾问"],
+"HR manager":["人力资源经理","HR经理","人事经理"],
+"Doctor / physician":["医生","内科医生","大夫"],
+"Pharmacist":["药剂师","药师"],
+"Radiologist":["放射科医生","影像科医生"],
+"Scientist / researcher":["科学家","研究员","科研人员"],
+"Real estate agent":["房产中介","地产经纪","房产经纪人","中介"],
+"Nurse":["护士"],
+"Therapist / counselor":["心理咨询师","治疗师"],
+"Social worker":["社工","社会工作者"],
+"Electrician":["电工"],
+"Plumber":["水管工","管道工"],
+"Carpenter":["木工","木匠"],
+"Mechanic":["汽车修理工","机修工","修车"],
+"Chef / cook":["厨师","大厨"],
+"Hairdresser / barber":["理发师","发型师","美发师"],
+"Personal trainer":["健身教练","私教"],
+"Truck driver":["卡车司机","货车司机"],
+"Delivery driver":["送货司机","外卖员","外卖骑手","配送员"],
+"Warehouse worker":["仓库工人","仓管","仓库管理员"],
+"Construction worker":["建筑工人","工地"],
+"Farmer":["农民","种地"],
+"Police officer":["警察","民警"],
+"Firefighter":["消防员"],
+"Pilot":["飞行员","机长"],
+"Dentist":["牙医","口腔医生"],
+"Actor / performer":["演员"],
+"Musician":["音乐人","音乐家"],
+"Data scientist":["数据科学家"],
+"Machine learning engineer":["机器学习工程师","算法工程师","AI工程师"],
+"DevOps / SRE engineer":["运维工程师","运维","DevOps工程师"],
+"QA / test engineer":["测试工程师","测试","软件测试"],
+"Cybersecurity analyst":["网络安全分析师","安全工程师","网络安全"],
+"IT support specialist":["IT支持","技术支持","IT运维"],
+"System administrator":["系统管理员"],
+"Database administrator":["数据库管理员","DBA"],
+"Mobile app developer":["移动开发","App开发","安卓开发","iOS开发"],
+"Game developer":["游戏开发","游戏程序员"],
+"Data engineer":["数据工程师"],
+"BI analyst":["商业智能分析师","BI分析师"],
+"Technical writer":["技术文档工程师","技术写作"],
+"Social media manager":["新媒体运营","社交媒体运营","小编","运营"],
+"SEO specialist":["SEO专员","搜索引擎优化"],
+"PR / communications specialist":["公关","公关专员"],
+"Grant writer":["项目申报专员","基金申请"],
+"Novelist / fiction author":["小说家","作家","网文作者"],
+"Screenwriter":["编剧"],
+"Interpreter (live)":["口译员","同传","口译"],
+"Animator":["动画师"],
+"3D artist":["3D美术","三维设计师","建模师"],
+"Art director":["美术指导","艺术总监"],
+"Interior designer":["室内设计师","装修设计"],
+"Fashion designer":["服装设计师"],
+"Industrial designer":["工业设计师"],
+"Motion designer":["动效设计师"],
+"Voice actor":["配音演员","配音","声优"],
+"Music producer":["音乐制作人","编曲"],
+"Sound engineer":["音响师","混音师","录音师"],
+"Tattoo artist":["纹身师"],
+"Business analyst":["商业分析师","业务分析师"],
+"Operations manager":["运营经理"],
+"Supply chain analyst":["供应链分析师","供应链"],
+"Procurement specialist":["采购专员","采购"],
+"Customer success manager":["客户成功经理"],
+"Account manager":["客户经理"],
+"Event planner":["活动策划","会展策划"],
+"Founder / entrepreneur":["创业者","创始人","老板"],
+"Executive / CEO":["高管","总裁","总经理"],
+"Auditor":["审计师","审计"],
+"Tax preparer":["报税员","税务师"],
+"Actuary":["精算师"],
+"Loan officer":["信贷员","贷款专员"],
+"Financial advisor":["理财顾问","财务顾问"],
+"Investment banker":["投行","投资银行家"],
+"Claims adjuster":["理赔员","理赔专员"],
+"Payroll specialist":["薪酬专员","薪资专员"],
+"Economist":["经济学家"],
+"Call center agent":["呼叫中心客服","电话客服"],
+"Retail cashier":["收银员"],
+"Retail salesperson":["导购","店员","营业员"],
+"Store manager":["店长"],
+"Insurance agent":["保险经纪","保险代理人","卖保险"],
+"Car salesperson":["汽车销售","卖车"],
+"Travel agent":["旅行社顾问","旅游顾问"],
+"Receptionist":["前台","前台接待"],
+"Executive assistant":["总裁助理","高管助理","秘书"],
+"Legal secretary":["法务秘书","律所秘书"],
+"Medical records clerk":["病案管理员","医疗记录员"],
+"Transcriptionist":["速记员","转录员"],
+"Court reporter":["法庭速记员"],
+"Dispatcher / scheduler":["调度员","调度"],
+"Judge":["法官"],
+"Compliance officer":["合规专员","合规官"],
+"Contract manager":["合同管理"],
+"Patent attorney":["专利律师","专利代理人"],
+"Legal researcher":["法律研究员","法务"],
+"HR coordinator":["人事专员","HR专员","人事"],
+"Talent sourcer":["人才寻访","猎头助理"],
+"Corporate trainer":["企业培训师","培训师"],
+"Career coach":["职业规划师","职业教练"],
+"University professor":["大学教授","教授","高校教师"],
+"Tutor":["家教","辅导老师"],
+"Preschool teacher":["幼儿园老师","幼师"],
+"Childcare worker":["保育员","托育老师"],
+"School counselor":["心理老师","学校心理辅导"],
+"Librarian":["图书管理员"],
+"Special education teacher":["特教老师","特殊教育教师"],
+"Veterinarian":["兽医"],
+"Physical therapist":["康复治疗师","理疗师","物理治疗师"],
+"Occupational therapist":["职业治疗师","作业治疗师"],
+"Speech therapist":["言语治疗师"],
+"Psychologist":["心理学家","心理医生"],
+"Psychiatrist":["精神科医生"],
+"Surgeon":["外科医生"],
+"Dental hygienist":["口腔卫生士","洗牙师"],
+"Paramedic / EMT":["急救员","急救医士"],
+"Medical lab technician":["检验科技师","化验员"],
+"Dietitian / nutritionist":["营养师"],
+"Welder":["焊工","电焊工"],
+"HVAC technician":["空调维修工","暖通技工","空调安装"],
+"Landscaper":["园林工","园艺师","绿化工"],
+"House painter":["油漆工","刷漆工"],
+"Roofer":["屋顶工"],
+"Machinist":["机械加工","车床工","数控操作员"],
+"Tailor / seamstress":["裁缝"],
+"Locksmith":["开锁匠","锁匠"],
+"Auto body technician":["钣金喷漆","汽修钣金"],
+"Elevator technician":["电梯维保","电梯工"],
+"Civil engineer":["土木工程师"],
+"Mechanical engineer":["机械工程师"],
+"Electrical engineer":["电气工程师"],
+"Chemical engineer":["化学工程师","化工工程师"],
+"Aerospace engineer":["航天工程师","航空工程师"],
+"Surveyor":["测绘员","测量员"],
+"Quality inspector":["质检员","质量检验员"],
+"Environmental scientist":["环境科学家","环评工程师"],
+"Biologist":["生物学家"],
+"Chemist":["化学家"],
+"Statistician":["统计学家","统计师"],
+"Historian":["历史学家"],
+"Archaeologist":["考古学家"],
+"News anchor":["新闻主播","播音员"],
+"Radio / podcast host":["电台主持人","播客主播","主持人"],
+"Film director":["导演"],
+"Cinematographer":["摄影指导","电影摄影师"],
+"Film / TV producer":["制片人"],
+"DJ":["打碟"],
+"Waiter / server":["服务员","餐厅服务员"],
+"Bartender":["调酒师"],
+"Barista":["咖啡师"],
+"Hotel receptionist":["酒店前台"],
+"Flight attendant":["空乘","空姐","乘务员"],
+"Tour guide":["导游"],
+"Baker":["面包师","烘焙师"],
+"Butcher":["屠夫","肉铺师傅"],
+"Esthetician":["美容师"],
+"Nail technician":["美甲师"],
+"Makeup artist":["化妆师"],
+"Massage therapist":["按摩师","推拿师"],
+"Housekeeper / cleaner":["保洁","家政","保洁员"],
+"Janitor / custodian":["清洁工","物业保洁"],
+"Security guard":["保安"],
+"Nanny":["保姆","育儿嫂"],
+"Pet groomer":["宠物美容师"],
+"Wedding planner":["婚礼策划师","婚庆策划"],
+"Taxi / rideshare driver":["出租车司机","网约车司机","滴滴司机","司机"],
+"Bus driver":["公交司机","大巴司机"],
+"Courier / messenger":["快递员","闪送"],
+"Forklift operator":["叉车司机"],
+"Train operator":["火车司机","地铁司机"],
+"Air traffic controller":["空管","航空管制员"],
+"Postal worker":["邮递员"],
+"Soldier / military":["军人","士兵"],
+"Detective / investigator":["侦探","刑警"],
+"Correctional officer":["狱警","监狱警察"],
+"Urban planner":["城市规划师","规划师"],
+"Politician":["政客","政治家"],
+"Clergy / religious leader":["神职人员","牧师"],
+"Sports coach":["教练","体育教练"],
+"My role isn't listed":["我的职业不在列表","其他","找不到"]
+};
+const CJK_RE=/[一-鿿]/;
+function zhMatch(j,q){
+  let best=0, hit="";
+  for(const z of (ZH[j.n]||[])){
+    let sc=0;
+    if(z===q) sc=100;
+    else if(z.startsWith(q)) sc=90;
+    else if(z.includes(q)) sc=75;
+    else if(q.includes(z)) sc=70;
+    if(sc>best){ best=sc; hit=z; }
   }
-  // group by category
-  const groups={};
-  list.forEach(j=>{(groups[j.c]=groups[j.c]||[]).push(j);});
-  let html="";
-  Object.keys(groups).forEach(cat=>{
-    html+=`<div class="res-group-label">${cat}</div>`;
-    groups[cat].forEach(j=>{
-      html+=`<button class="res-item" data-name="${escapeHtml(j.n)}"><span>${escapeHtml(j.n)}</span><span class="cat">${j.c==="Custom"?"":"idx "+j.s}</span></button>`;
-    });
-  });
-  resultsEl.innerHTML=html;
-  resultsEl.querySelectorAll(".res-item").forEach(el=>{
-    el.onclick=()=>selectJob(JOBS.find(j=>j.n===el.dataset.name));
-  });
-  resultsEl.classList.add("open"); searchEl.setAttribute("aria-expanded","true");
+  return {sc:best, hit};
 }
 function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function fuzzySub(q,s){ let i=0; for(const ch of s){ if(ch===q[i]) i++; if(i===q.length) return true; } return false; }
+function aliasHit(j,q){
+  for(const k in ALIASES){
+    if((k.startsWith(q)||q.startsWith(k))&&ALIASES[k].includes(j.n)) return true;
+  }
+  return false;
+}
+function matchScore(j,q){
+  const n=j.n.toLowerCase();
+  if(n===q) return 100;
+  if(n.startsWith(q)) return 90;
+  if(aliasHit(j,q)) return 85;
+  if(n.split(/[^a-z0-9]+/).some(w=>w.startsWith(q))) return 80;
+  if(n.includes(q)) return 70;
+  if(j.c.toLowerCase().includes(q)) return 40;
+  if(q.length>=4&&fuzzySub(q,n)) return 25;
+  return 0;
+}
+/* Highlight the matched substring (safe: escapes around the match) */
+function hl(name,q){
+  const i=name.toLowerCase().indexOf(q);
+  if(i<0||!q) return escapeHtml(name);
+  return escapeHtml(name.slice(0,i))+"<mark>"+escapeHtml(name.slice(i,i+q.length))+"</mark>"+escapeHtml(name.slice(i+q.length));
+}
+function openResults(html){
+  activeIdx=-1;
+  resultsEl.innerHTML=html;
+  resultsEl.querySelectorAll(".res-item").forEach(el=>{
+    el.onclick=()=>{
+      if(el.dataset.cat!==undefined) return renderCategory(el.dataset.cat);
+      if(el.dataset.back!==undefined) return renderResults("");
+      selectJob(JOBS.find(j=>j.n===el.dataset.name));
+    };
+  });
+  resultsEl.classList.add("open"); searchEl.setAttribute("aria-expanded","true");
+  resultsEl.scrollTop=0;
+}
+function jobRow(j,q,zh){
+  const right=j.c==="Custom"?"":`${escapeHtml(j.c)} · ${j.s}`;
+  const zhTag=zh?` <span class="zhn">${hl(zh,q||"")}</span>`:"";
+  const nameHtml=zh?escapeHtml(j.n)+zhTag:hl(j.n,q||"");
+  return `<button class="res-item" data-name="${escapeHtml(j.n)}"><span>${nameHtml}</span><span class="cat">${right}</span></button>`;
+}
+const POPULAR=["Software developer","Teacher","Nurse","Marketer","Accountant","Customer support rep","Graphic designer","Product manager"];
+function renderResults(q){
+  const query=(q||"").trim().toLowerCase();
+
+  /* Empty query → popular roles + category drill-down */
+  if(!query){
+    let html=`<div class="res-group-label">Popular</div>`;
+    POPULAR.forEach(n=>{ const j=JOBS.find(x=>x.n===n); if(j) html+=jobRow(j); });
+    html+=`<div class="res-group-label">Browse by category</div>`;
+    const cats={};
+    JOBS.forEach(j=>{ if(j.c!=="Custom") cats[j.c]=(cats[j.c]||0)+1; });
+    Object.keys(cats).sort().forEach(c=>{
+      html+=`<button class="res-item res-cat-row" data-cat="${escapeHtml(c)}"><span class="cat-name">${escapeHtml(c)}</span><span class="cat">${cats[c]} roles →</span></button>`;
+    });
+    html+=jobRow(JOBS[JOBS.length-1]);
+    openResults(html);
+    return;
+  }
+
+  /* Typed query → ranked flat list (CJK queries match Chinese names) */
+  const isCJK=CJK_RE.test(query);
+  const scored=JOBS.filter(j=>j.c!=="Custom")
+    .map(j=>{
+      if(isCJK){ const m=zhMatch(j,query); return {j,sc:m.sc,zh:m.hit}; }
+      return {j,sc:matchScore(j,query),zh:""};
+    })
+    .filter(x=>x.sc>0)
+    .sort((a,b)=>b.sc-a.sc||a.j.n.localeCompare(b.j.n))
+    .slice(0,40);
+
+  if(scored.length===0){
+    const msg=isCJK
+      ? `没有找到“<b>${escapeHtml(q)}</b>”。选一个最接近的职业，或选 <b>My role isn't listed</b>，用下面的问题来校准。`
+      : `No match for “<b>${escapeHtml(q)}</b>.” Pick the closest role, or choose <b>My role isn't listed</b> and let the questions calibrate it.`;
+    openResults(`<div class="res-empty">${msg}</div>`+jobRow(JOBS[JOBS.length-1]));
+    return;
+  }
+  let html="";
+  scored.forEach(({j,zh})=>{ html+=jobRow(j,query,zh); });
+  html+=jobRow(JOBS[JOBS.length-1]);
+  openResults(html);
+}
+function renderCategory(cat){
+  let html=`<button class="res-item res-back" data-back><span>← All categories</span></button>`;
+  html+=`<div class="res-group-label">${escapeHtml(cat)}</div>`;
+  JOBS.filter(j=>j.c===cat).sort((a,b)=>b.s-a.s).forEach(j=>{ html+=jobRow(j); });
+  openResults(html);
+  searchEl.focus();
+}
 
 searchEl.addEventListener("input",e=>renderResults(e.target.value));
 searchEl.addEventListener("focus",e=>{ if(!current) renderResults(e.target.value); });
