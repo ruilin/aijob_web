@@ -7,6 +7,9 @@
 <title>Will AI take your job? — AI Exposure Index by RL Studio</title>
 <meta name="description" content="Will AI take your job? Get a calm, task-level read on how exposed your role is to AI. Search 200+ jobs, tune six questions to your real work, and see what changes, what holds, and how to stay ahead — free, private, no signup." />
 <link rel="canonical" href="https://aijob-web.vercel.app/" />
+<link rel="alternate" hreflang="en" href="https://aijob-web.vercel.app/" />
+<link rel="alternate" hreflang="zh" href="https://aijob-web.vercel.app/?lang=zh" />
+<link rel="alternate" hreflang="x-default" href="https://aijob-web.vercel.app/" />
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
 <meta name="author" content="RL Studio" />
 <meta name="keywords" content="AI exposure, will AI take my job, AI job risk, automation risk, AI and jobs, job automation, future of work, AI exposure index, AI会取代我的工作吗, AI失业, 人工智能与就业, AI取代职业" />
@@ -19,6 +22,7 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://aijob-web.vercel.app/" />
 <meta property="og:locale" content="en_US" />
+<meta property="og:locale:alternate" content="zh_CN" />
 <meta property="og:image" content="https://aijob-web.vercel.app/og-image.png" />
 <meta property="og:image:type" content="image/png" />
 <meta property="og:image:width" content="1200" />
@@ -134,9 +138,9 @@
     --shadow-lift:0 2px 4px rgba(20,25,34,.05), 0 26px 50px -24px rgba(20,25,34,.32);
 
     --maxw:1080px;
-    --f-display:"Space Grotesk", system-ui, sans-serif;
-    --f-body:"Inter", system-ui, sans-serif;
-    --f-mono:"Space Mono", ui-monospace, monospace;
+    --f-display:"Space Grotesk","PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+    --f-body:"Inter","PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+    --f-mono:"Space Mono","PingFang SC","Microsoft YaHei",ui-monospace,monospace;
   }
 
   *{box-sizing:border-box;}
@@ -197,11 +201,13 @@
   }
   .brand-name{font-family:var(--f-display);font-weight:600;font-size:15.5px;letter-spacing:-.01em;}
   .brand-name span{color:var(--muted);font-weight:500;}
-  .top a.method-link{
+  .top a.method-link,.top button.method-link{
     font-family:var(--f-mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;
     color:var(--muted);text-decoration:none;padding:8px 10px;border-radius:8px;
+    border:0;background:transparent;
   }
-  .top a.method-link:hover{color:var(--ink);background:var(--surface);}
+  .top a.method-link:hover,.top button.method-link:hover{color:var(--ink);background:var(--surface);}
+  .top .nav-right{display:flex;align-items:center;gap:2px;}
 
   /* ---------- Hero ---------- */
   .hero{padding:74px 0 30px;}
@@ -488,7 +494,10 @@
       <span class="brand-badge">RL</span>
       <span class="brand-name">RL Studio<span> · Exposure Index</span></span>
     </a>
-    <a class="method-link" href="#method">How it works</a>
+    <div class="nav-right">
+      <button class="method-link" id="langBtn" aria-label="切换到中文 / Switch language">中文</button>
+      <a class="method-link" href="#method">How it works</a>
+    </div>
   </div>
 </header>
 
@@ -994,19 +1003,22 @@ const analyzerEl = $("#analyzer");
 const questionsEl = $("#questions");
 
 /* ---------------- Suggested chips ---------------- */
-["Software developer","Graphic designer","Teacher","Nurse","Accountant","Marketer"].forEach(name=>{
+function buildChips(){
+  chipsEl.innerHTML=`<span class="chip-label">${isZh()?"试试":"Try"}</span>`;
+  ["Software developer","Graphic designer","Teacher","Nurse","Accountant","Marketer"].forEach(name=>{
+    const job=JOBS.find(j=>j.n===name);
+    const b=document.createElement("button");
+    b.className="chip"; b.textContent=dispName(job);
+    b.onclick=()=>selectJob(job);
+    chipsEl.appendChild(b);
+  });
   const b=document.createElement("button");
-  b.className="chip"; b.textContent=name;
-  b.onclick=()=>selectJob(JOBS.find(j=>j.n===name));
-  chipsEl.appendChild(b);
-});
-// Browse-all entry point
-{
-  const b=document.createElement("button");
-  b.className="chip"; b.textContent=`Browse all ${JOBS.length-1} ↓`;
+  b.className="chip";
+  b.textContent=isZh()?`浏览全部 ${JOBS.length-1} 个 ↓`:`Browse all ${JOBS.length-1} ↓`;
   b.onclick=()=>{ renderResults(""); searchEl.focus(); };
   chipsEl.appendChild(b);
 }
+/* built at init (bottom of script) — i18n state must exist first */
 
 /* ---------------- Search ---------------- */
 /* Informal titles people actually type → canonical role names */
@@ -1256,6 +1268,256 @@ const ZH={
 "Sports coach":["教练","体育教练"],
 "My role isn't listed":["我的职业不在列表","其他","找不到"]
 };
+/* ================= i18n ================= */
+let LANG="en";
+const H_ZH={"Already changing":"已经在变","3–6 years":"3–6 年","3–7 years":"3–7 年","3–10 years":"3–10 年","5–10 years":"5–10 年","5–12 years":"5–12 年","7–12 years":"7–12 年","7–15 years":"7–15 年","10+ years":"10 年以上","Low / long-term":"较低 / 长期","Varies":"因人而异"};
+const CAT_ZH={"Admin & office":"行政办公","Sales & support":"销售与客服","Finance":"金融财务","Language & content":"语言与内容","Legal":"法律","Business & strategy":"商业与战略","Tech & data":"科技与数据","Design & creative":"设计与创意","People & HR":"人力资源","Education & care":"教育与医疗照护","Skilled trades":"技术工种","Skilled & technical":"技能与工程","Personal service":"个人服务","Logistics & transport":"物流交通","Public service":"公共服务","Hospitality & food":"酒店餐饮","Media & performance":"媒体与表演","Science & research":"科学研究","Custom":"自定义"};
+/* Per-job Chinese task lists (ex = exposed, ed = human edge) */
+const ZHJOB={
+"Data entry clerk":{ex:["打字与转录记录","在系统之间搬运数据","整理和清洗表格","基础表单处理"],ed:["发现真实世界的混乱特例","为数据质量把关"]},
+"Telemarketer":{ex:["照稿外呼","筛选潜在客户","跟进消息","通话记录"],ed:["察言观色、建立好感","应对情绪激烈的拒绝"]},
+"Bookkeeper / accounting clerk":{ex:["交易分类","对账","生成例行报表","发票处理"],ed:["灰色地带的建议","为准确与合规负责"]},
+"Translator":{ex:["初稿翻译","普通文档转换","常规内容字幕"],ed:["语气、细节与文化语境","高风险的法律与文学翻译"]},
+"Customer support rep":{ex:["回答常见问题","工单分流","起草标准回复"],ed:["安抚愤怒的客户","处理罕见的高情绪场面"]},
+"Bank teller":{ex:["例行交易","余额与账户查询","标准表单"],ed:["当面识别欺诈","让焦虑客户安心的建议"]},
+"Insurance underwriter":{ex:["标准风险评分","规则化审批","文件审核"],ed:["复杂的非标案件","负责任的最终签批"]},
+"Copywriter / content writer":{ex:["批量产出文案初稿","SEO 与商品描述","改写与多版本"],ed:["原创的声音与策略","品牌判断与品味"]},
+"Proofreader / editor":{ex:["语法与文风修正","一致性检查","基础事实标记"],ed:["结构与叙事层面的编辑","判断什么值得说"]},
+"Paralegal":{ex:["文件审阅与摘要","按模板起草合同","法律检索初筛"],ed:["客户策略判断","一切需要担责的事"]},
+"Market research analyst":{ex:["问卷与数据汇总","报告生成","趋势图表与复盘"],ed:["提出正确的问题","把数据变成决策"]},
+"Software developer":{ex:["样板代码与胶水代码","单元测试和文档","Bug 分类与重构"],ed:["系统设计与架构","取舍判断与担当","理解混乱的人类需求"]},
+"Web developer":{ex:["标准布局与组件","增删改查功能","内容与模板工作"],ed:["复杂产品逻辑","性能与边界情况判断"]},
+"Data analyst":{ex:["取数与清洗","标准仪表盘","例行 SQL 与汇总"],ed:["问对业务问题","知道哪些数字可信"]},
+"Graphic designer":{ex:["改稿与多尺寸适配","通用风格素材","初稿排版"],ed:["品牌系统与艺术指导","品味、概念与客户判断"]},
+"Illustrator":{ex:["通用插画","风格变体","快速概念图"],ed:["独特个人风格","原创想法与委托愿景"]},
+"UX / product designer":{ex:["线框图变体","文案与布局初稿","设计系统杂活"],ed:["用户研究与共情","产品判断与优先级"]},
+"Photographer":{ex:["图库与产品图","基础修图","生成式占位图"],ed:["现场活动与真实瞬间","导演能力、关系与品味"]},
+"Video editor":{ex:["粗剪与字幕","二次剪辑与多尺寸","基础调色和音频"],ed:["故事与节奏判断","高端创意方向"]},
+"Journalist / reporter":{ex:["例行与模板化报道","摘要与聚合","初稿"],ed:["原创报道与信源","调查与问责"]},
+"Marketer":{ex:["活动文案与素材","A/B 多版本","报告与复盘"],ed:["策略与定位","读懂市场的嗅觉"]},
+"Financial analyst":{ex:["建模与更新","数据收集","标准报告"],ed:["不确定中的判断","说服利益相关方"]},
+"Recruiter":{ex:["寻访与筛选","约面与触达","撰写职位描述"],ed:["看人识人","成单与关系经营"]},
+"Accountant":{ex:["例行报表与申报","对账","标准报税"],ed:["顾问与规划","负责任的签字与职业操守"]},
+"Administrative assistant":{ex:["日程与邮箱整理","起草例行文档","会议记录与摘要"],ed:["预判老板的真实需求","分寸感与人际协调"]},
+"Lawyer":{ex:["检索与文书起草","批量合同审阅","判例检索"],ed:["法庭与谈判","负责任的法律判断","客户信任"]},
+"Teacher":{ex:["教案初稿","批改常规作业","生成教学材料"],ed:["激励和引导孩子","课堂气场与关怀"]},
+"Product manager":{ex:["文档与需求起草","数据摘要","需求池整理"],ed:["决定做什么、为什么做","拉齐团队并为结果负责"]},
+"Project manager":{ex:["进度报告与同步","排期与跟踪","会议纪要"],ed:["处理人与冲突","计划崩掉时的判断"]},
+"Architect":{ex:["制图与迭代","规范合规检查","效果图与变体"],ed:["创意愿景与客户信任","对结构负责的判断"]},
+"Sales representative":{ex:["触达与跟进","方案初稿","CRM 维护"],ed:["建立真实的关系","读懂并拿下复杂订单"]},
+"Consultant":{ex:["调研与做 PPT","数据分析","对标分析"],ed:["被信任的判断与框架","说服力与客户关系"]},
+"HR manager":{ex:["制度与文档起草","筛选与排期","日常咨询"],ed:["敏感的人事场面","文化与信任"]},
+"Doctor / physician":{ex:["病历与文书","分诊辅助与摘要","影像与检验标记"],ed:["床旁判断与信任","负责任的诊断与照护"]},
+"Pharmacist":{ex:["调剂核对","相互作用筛查","库存与记录"],ed:["患者用药指导","负责任的临床判断"]},
+"Radiologist":{ex:["影像初读","常规测量","报告初稿"],ed:["模糊与罕见病例","负责任的诊断"]},
+"Scientist / researcher":{ex:["文献综述","数据分析与写代码","论文初稿"],ed:["新假设与实验设计","判断什么才重要"]},
+"Real estate agent":{ex:["房源与文案","线索跟进","流程文书"],ed:["本地行情与信任","谈判与全程陪伴"]},
+"Nurse":{ex:["护理记录与文书","排班辅助","常规监测提醒"],ed:["亲手照护与安抚","床旁的瞬间判断"]},
+"Therapist / counselor":{ex:["记录与行政","资源推荐","预约排期"],ed:["深度信任与共情","读懂未说出口的信号"]},
+"Social worker":{ex:["个案记录","表格与报告","资源查找"],ed:["危机中的人性判断","与弱势群体的信任"]},
+"Electrician":{ex:["报价与文书","手册与规范查询"],ed:["狭小复杂空间里的手上功夫","安全判断与排障"]},
+"Plumber":{ex:["报价与排期","配件查询"],ed:["不可预测现场的体力活","当场解决问题"]},
+"Carpenter":{ex:["下料单与报价","设计参考"],ed:["精准的手上手艺","适应真实的材料"]},
+"Mechanic":{ex:["故障码查询","手册与报价"],ed:["动手修理的手感","诊断稀奇古怪的疑难杂症"]},
+"Chef / cook":{ex:["菜单创意与菜谱","订货与库存","备菜计划"],ed:["味道、火候与执行","高压后厨的真功夫"]},
+"Hairdresser / barber":{ex:["预约与提醒","发型灵感"],ed:["手上功夫与精准","私人关系与信任"]},
+"Personal trainer":{ex:["通用计划生成","进度跟踪","排课"],ed:["面对面的激励","动作纠正与因人调整"]},
+"Truck driver":{ex:["路线优化","日志与文书"],ed:["应对路况、天气与突发","装卸、检查与最后一公里"]},
+"Delivery driver":{ex:["路线规划","派单与追踪"],ed:["门口那五十米的判断","处理现实中的小状况"]},
+"Warehouse worker":{ex:["库存跟踪","拣货单生成"],ed:["处理奇形怪状的货","现场的身体灵活性"]},
+"Construction worker":{ex:["计划与预算","排期"],ed:["变化工地上的体力活","现场应变与安全"]},
+"Farmer":{ex:["计划与预测","记录","产量分析"],ed:["土地和牲畜的亲手活","看天吃饭的判断"]},
+"Police officer":{ex:["报告起草","档案查询"],ed:["现场的威慑与控场","高风险的人性判断"]},
+"Firefighter":{ex:["报告与排班","训练材料"],ed:["混乱中的体力救援","生死攸关的团队协作"]},
+"Pilot":{ex:["航班计划辅助","系统监控"],ed:["负全责的机长权威","处置紧急与意外"]},
+"Dentist":{ex:["病历与影像辅助","排期","治疗方案初稿"],ed:["口腔里的精细手活","患者信任与关怀"]},
+"Actor / performer":{ex:["生成背景群演","部分配音用途"],ed:["现场魅力与戏路","有血有肉的原创表演"]},
+"Musician":{ex:["伴奏与库存音乐","Demo 与变体生成"],ed:["现场演出与艺术性","原创声音与共鸣"]},
+"Data scientist":{ex:["模型原型与调参","探索性分析与图表","数据清洗管线"],ed:["定义值得解决的问题","因果与偏差的判断"]},
+"Machine learning engineer":{ex:["训练管线样板代码","实验跟踪与评估","标准模型部署"],ed:["新架构的判断","调试诡异的真实故障"]},
+"DevOps / SRE engineer":{ex:["配置与 IaC 样板","预案初稿与告警分流","CI/CD 搭建"],ed:["高压下的故障指挥","架构与可靠性取舍"]},
+"QA / test engineer":{ex:["测试用例生成","回归脚本","Bug 报告起草"],ed:["探索性测试直觉","知道用户会怎么玩坏它"]},
+"Cybersecurity analyst":{ex:["日志分流与告警筛查","报告起草","漏洞扫描"],ed:["对抗性思维","事件处置与担责"]},
+"IT support specialist":{ex:["重置密码与使用指引","工单分流","已知问题修复"],ed:["动手修硬件","安抚崩溃的用户"]},
+"System administrator":{ex:["例行补丁与脚本","监控与备份","文档"],ed:["在老系统上动刀","宕机时的判断"]},
+"Database administrator":{ex:["查询调优建议","备份自动化","表结构初稿"],ed:["高风险数据恢复","大规模性能判断"]},
+"Mobile app developer":{ex:["标准页面与增删改查","样板代码与测试","商店上架素材"],ed:["产品手感与性能","复杂的原生边界情况"]},
+"Game developer":{ex:["资源管线脚本","系统样板代码","占位内容"],ed:["好玩——设计直觉","深度引擎与性能功夫"]},
+"Data engineer":{ex:["管线样板代码","字段映射与 ETL","数据质量检查"],ed:["为脏数据设计架构","取舍判断"]},
+"BI analyst":{ex:["搭仪表盘","周期性报表","常规取数 SQL"],ed:["问出需求背后的问题","讲动决策层的数据故事"]},
+"Technical writer":{ex:["按规格出文档初稿","API 参考生成","风格清理"],ed:["理解用户真正的困惑","信息架构"]},
+"Social media manager":{ex:["帖子起草与多版本","排期与复盘","文案与标签创意"],ed:["语感、时机与文化嗅觉","社区信任与危机处理"]},
+"SEO specialist":{ex:["批量关键词研究","页面与内容优化","审计报告"],ed:["搜索被 AI 重构时的战略","品牌与流量的取舍"]},
+"PR / communications specialist":{ex:["新闻稿初稿","媒体名单整理","报道汇总"],ed:["与记者的交情","火线上的危机判断"]},
+"Grant writer":{ex:["申报书初稿","模板化章节","资助方调研"],ed:["与资助方的关系","申报策略"]},
+"Novelist / fiction author":{ex:["类型化套路初稿","梗概与简介","设定连贯性检查"],ed:["读者认的是你的声音","亲历与原创"]},
+"Screenwriter":{ex:["格式化初稿与剧本评估","对白多版本","一句话梗概"],ed:["能开拍的原创故事","圈子、笔记与人脉"]},
+"Interpreter (live)":{ex:["事先备稿与字幕","常用语口译"],ed:["现场的高风险细微差别","实时的文化判断"]},
+"Animator":{ex:["中间帧与清稿","简单循环与变体","预演初稿"],ed:["节奏与表演的选择","标志性风格"]},
+"3D artist":{ex:["基础模型与贴图","通用素材","变体"],ed:["艺术方向与品味","复杂定制工作"]},
+"Art director":{ex:["情绪板与小样","素材变体","brief 起草"],ed:["品味与品牌判断","既指挥人也指挥 AI"]},
+"Interior designer":{ex:["概念板与效果图","家具清单","布局方案"],ed:["读懂客户真实的生活方式","现场判断与工艺"]},
+"Fashion designer":{ex:["印花与版型变体","趋势汇总","工艺单初稿"],ed:["品味与态度","版型、面料与工艺手感"]},
+"Industrial designer":{ex:["概念草图与渲染","CAD 迭代","规格文档"],ed:["人体工学判断","制造的现实"]},
+"Motion designer":{ex:["模板动画","多尺寸改版","分镜初稿"],ed:["手艺与节奏","概念与艺术方向"]},
+"Voice actor":{ex:["课件与语音导航配音","占位与批量旁白"],ed:["情感幅度与演技","被点名要的声音"]},
+"Music producer":{ex:["节拍与分轨生成","混音预设与清理","参考曲目"],ed:["品味与艺人的化学反应","让人想要的声音"]},
+"Sound engineer":{ex:["降噪与母带预设","常规混音"],ed:["真实场地与声学","金耳朵与判断"]},
+"Tattoo artist":{ex:["设计参考与小样","预约与定金"],ed:["刻在真皮肤上的艺术","信任与个人风格"]},
+"Business analyst":{ex:["需求初稿","流程文档","数据摘要"],ed:["听懂干系人真正想要什么","判断什么才重要"]},
+"Operations manager":{ex:["报表与仪表盘","SOP 起草","排班"],ed:["带队伍穿越变化","出事时的判断"]},
+"Supply chain analyst":{ex:["需求预测","库存报表","情景模拟"],ed:["供应商关系","危机改道的判断"]},
+"Procurement specialist":{ex:["招标书起草与比价","供应商调研","合同摘要"],ed:["谈判筹码","供应商信任"]},
+"Customer success manager":{ex:["上手文档与例行回访","使用报告","续约提醒"],ed:["经得起事故的客户关系","从字缝里读出流失风险"]},
+"Account manager":{ex:["状态同步与复盘","增购提案","CRM 维护"],ed:["饭桌上和危机中攒下的信任","客户内部的政治"]},
+"Event planner":{ex:["供应商调研比价","日程与清单","邀请函与文案"],ed:["现场混乱中的指挥","品味与人的调度"]},
+"Founder / entrepreneur":{ex:["PPT、文档与原型","市场调研","运营杂务"],ed:["愿景、风险与说服力","做那个担责的人"]},
+"Executive / CEO":{ex:["简报摘要","讲话稿初稿","分析准备"],ed:["担责的判断","带人穿越不确定"]},
+"Auditor":{ex:["抽样与测试","底稿起草","异常标记"],ed:["职业怀疑精神","负责任的签字"]},
+"Tax preparer":{ex:["标准报税","材料收集","抵扣清单"],ed:["复杂跨境案件","客户信得过的建议"]},
+"Actuary":{ex:["模型运行与更新","标准估值","报告起草"],ed:["对假设的判断","负责任的定价"]},
+"Loan officer":{ex:["申请处理","材料核验","标准风险评分"],ed:["边缘案例的判断","本地人脉"]},
+"Financial advisor":{ex:["组合报告","方案初稿","市场摘要"],ed:["行情吓人时的信任","懂钱背后那家人"]},
+"Investment banker":{ex:["路演 PPT 与可比分析","建模","尽调摘要"],ed:["关系与信任","交易判断与谈判"]},
+"Claims adjuster":{ex:["单证审核","标准定损","赔付计算"],ed:["复杂案件的欺诈嗅觉","现场查勘"]},
+"Payroll specialist":{ex:["算薪与更正","合规检查","报表生成"],ed:["跨地区的疑难杂症","工资出错时那个被信任的人"]},
+"Economist":{ex:["数据分析与图表","文献综述","预测模型运行"],ed:["判断模型漏了什么","提出真正重要的问题"]},
+"Call center agent":{ex:["照稿接线","标准处理","通话小结"],ed:["剧本管不了的情况","化解怒气的人类耐心"]},
+"Retail cashier":{ex:["收银与支付","查价","基础退换"],ed:["防损直觉与特殊情况","门店的人情味"]},
+"Retail salesperson":{ex:["库存查询","商品对比","补货下单"],ed:["当面看懂顾客","试穿试用的贴身帮助"]},
+"Store manager":{ex:["排班与库存报表","销售复盘","订货草稿"],ed:["带一线团队","面对真实顾客的判断"]},
+"Insurance agent":{ex:["报价生成","保单对比","续保提醒"],ed:["理赔时刻的信任","看懂一家人的真实风险"]},
+"Car salesperson":{ex:["车源匹配","金融手续","跟进消息"],ed:["试驾建立的关系","面对面的砍价"]},
+"Travel agent":{ex:["行程规划","订票改签","目的地调研"],ed:["复杂行程的品味","旅途出问题时的真人"]},
+"Receptionist":{ex:["转接与排期","访客登记","常规咨询"],ed:["做迎面那张有温度的脸","看出谁真正需要什么"]},
+"Executive assistant":{ex:["日历与邮箱整理","差旅预订","会议纪要"],ed:["预判与分寸","替老板把关"]},
+"Legal secretary":{ex:["文书排版与归档","日程与函件","模板起草"],ed:["事务所内部的门道","涉密的信任关系"]},
+"Medical records clerk":{ex:["病案归档与编码","数据录入","调阅处理"],ed:["乱病历的判断","隐私的边界情况"]},
+"Transcriptionist":{ex:["音频转写","排版与时间戳","稿件清理"],ed:["糟糕音质与罕见口音","专业领域的准确性"]},
+"Court reporter":{ex:["实时速记","笔录排版"],ed:["对庭审记录的认证担责","法庭在场"]},
+"Dispatcher / scheduler":{ex:["路线与班次调度","状态同步","记录"],ed:["紧急情况的判断","实时协调一群真人"]},
+"Judge":{ex:["案情摘要与检索","判决书初稿"],ed:["担责的正义","社会要求由人来做的判断"]},
+"Compliance officer":{ex:["制度起草","监测与标记","培训材料"],ed:["灰色地带的判断","监管要求的问责"]},
+"Contract manager":{ex:["合同审阅与批注","条款库","续约跟踪"],ed:["谈判判断","关系背景"]},
+"Patent attorney":{ex:["现有技术检索","申请书撰写","审查意见答复"],ed:["权利要求策略","负责任的代理"]},
+"Legal researcher":{ex:["判例检索与摘要","备忘录起草","引证核查"],ed:["发现新颖论点","判断什么能说服法官"]},
+"HR coordinator":{ex:["入职手续","排期与档案","制度答疑"],ed:["敏感对话","读懂团队动态"]},
+"Talent sourcer":{ex:["批量搜简历","触达话术","初筛摘要"],ed:["把活人说动来面试","识人的直觉"]},
+"Corporate trainer":{ex:["课件起草","出题","培训小结"],ed:["现场带课的能量","看出全场听懵了"]},
+"Career coach":{ex:["简历与求职信初稿","面试题准备","市场调研"],ed:["督促与激励","听出没说出口的话"]},
+"University professor":{ex:["讲义与大纲初稿","批改辅助","文献综述"],ed:["原创研究方向","改变一生的师徒关系"]},
+"Tutor":{ex:["练习题与讲解","进度跟踪","课程计划"],ed:["建立学习信心","看出学生卡在哪"]},
+"Preschool teacher":{ex:["活动策划","成长记录"],ed:["照护、安全与温度","面对面的发展判断"]},
+"Childcare worker":{ex:["日程与家长沟通"],ed:["亲手照护与信任","时刻在场"]},
+"School counselor":{ex:["排期与记录","资源查找"],ed:["让挣扎中的孩子信任你","危机判断"]},
+"Librarian":{ex:["编目与元数据","咨询检索","内容摘要"],ed:["社区活动策划","对信源和人的判断"]},
+"Special education teacher":{ex:["个别化教育计划文书","教材改编"],ed:["一人一案的耐心","读懂非语言的需求"]},
+"Veterinarian":{ex:["病历与记录","诊断辅助","医嘱说明"],ed:["亲手照护动物","病人说不了话时的判断"]},
+"Physical therapist":{ex:["训练计划初稿","进度记录"],ed:["亲手治疗","读懂疼痛与动力"]},
+"Occupational therapist":{ex:["文书与计划"],ed:["亲手做适应性改造","对家庭与生活的判断"]},
+"Speech therapist":{ex:["练习生成","进度记录","练习 App"],ed:["面对面的治疗联结","诊断的细微差别"]},
+"Psychologist":{ex:["记录与测评初稿","文献摘要"],ed:["深度的治疗联盟","临床判断"]},
+"Psychiatrist":{ex:["文书记录","药物相互作用检查"],ed:["负责任的处方判断","危机中的信任"]},
+"Surgeon":{ex:["手术记录起草","影像复核辅助","排台"],ed:["在人体内动手","毫秒级的判断"]},
+"Dental hygienist":{ex:["记录与提醒","X 光片标记"],ed:["亲手洁治","椅旁的信任"]},
+"Paramedic / EMT":{ex:["出车报告","预案查询"],ed:["混乱中救命的双手","现场判断"]},
+"Medical lab technician":{ex:["样本分析自动化","结果标记","记录"],ed:["异常样本的判断","质量担责"]},
+"Dietitian / nutritionist":{ex:["食谱初稿","营养分析","科普材料"],ed:["行为改变的陪伴","面对面的医学细节"]},
+"Welder":{ex:["报价与规格","配件查询"],ed:["刁钻位置的精准手艺","材料与安全判断"]},
+"HVAC technician":{ex:["排期与报价","手册查询","故障码"],ed:["爬进管道井解决问题","现场修复"]},
+"Landscaper":{ex:["设计小样","报价与植物清单"],ed:["真实地形上的体力活","手艺与应变"]},
+"House painter":{ex:["报价与配色预览"],ed:["基层处理与收尾手艺","真实的房子真实的乱"]},
+"Roofer":{ex:["报价与用料清单"],ed:["高危的体力精准活","天气与结构判断"]},
+"Machinist":{ex:["CAM 编程辅助","规格文档"],ed:["手感里的公差","装夹判断"]},
+"Tailor / seamstress":{ex:["打版辅助","订单与预约"],ed:["真人身上的合身","手上功夫"]},
+"Locksmith":{ex:["排期与报价"],ed:["现场的精细手活","紧急时刻的信任"]},
+"Auto body technician":{ex:["照片估损","配件订购"],ed:["动手修复的手艺","色漆与收尾判断"]},
+"Elevator technician":{ex:["维保记录","故障查询"],ed:["人命关天的动手活","老旧系统的判断"]},
+"Civil engineer":{ex:["制图与计算","合规审查","报告撰写"],ed:["现场判断","盖章即担责"]},
+"Mechanical engineer":{ex:["CAD 迭代","仿真运行","文档"],ed:["物理直觉","设计取舍判断"]},
+"Electrical engineer":{ex:["原理图初稿","仿真与校核","文档"],ed:["调试真实硬件","安全攸关的判断"]},
+"Chemical engineer":{ex:["流程建模","文档","数据分析"],ed:["车间现场的判断","安全担责"]},
+"Aerospace engineer":{ex:["仿真与分析","文档","设计迭代"],ed:["适航认证担责","系统级判断"]},
+"Surveyor":{ex:["数据处理","图件绘制","档案检索"],ed:["真实地形的外业","边界判断"]},
+"Quality inspector":{ex:["视觉检测自动化","报告生成","规格核对"],ed:["临界品的判断","工艺直觉"]},
+"Environmental scientist":{ex:["数据分析与报告","许可申报","监测汇总"],ed:["野外采样判断","干系人信任"]},
+"Biologist":{ex:["文献综述","数据分析","基金申请"],ed:["新颖的实验设计","湿实验的双手"]},
+"Chemist":{ex:["反应预测","数据分析","记录"],ed:["台架功夫","面对意外的判断"]},
+"Statistician":{ex:["标准分析","代码与图表","报告起草"],ed:["脏数据设计的判断","知道模型什么时候在骗你"]},
+"Historian":{ex:["史料摘要","初稿撰写","档案检索"],ed:["原创诠释","档案嗅觉"]},
+"Archaeologist":{ex:["编目与记录","遗址报告","分析"],ed:["野外发掘","从残片里读出故事"]},
+"News anchor":{ex:["稿件起草","常规播报"],ed:["直播中的判断与公信力","观众为之守候的气场"]},
+"Radio / podcast host":{ex:["节目笔记与剪辑","单集摘要","口播广告"],ed:["被人喜爱的声音和人格","即兴对话的化学反应"]},
+"Film director":{ex:["分镜与预演","剧本评估","排期"],ed:["愿景与品味","片场带人"]},
+"Cinematographer":{ex:["分镜清单初稿","参考画面","调色流程"],ed:["真实面孔上的光","片场判断"]},
+"Film / TV producer":{ex:["预算与排期","剧本评估与笔记","后勤"],ed:["攒局与人脉","救火能力"]},
+"DJ":{ex:["歌单建议","混音素材","宣传帖"],ed:["读懂现场舞池","气场与个人品牌"]},
+"Waiter / server":{ex:["点单与结账","订位管理"],ed:["让人回头的待客之道","爆满时的手脚麻利"]},
+"Bartender":{ex:["库存与订货","配方查询"],ed:["手艺、速度与熟客","读懂午夜的酒吧"]},
+"Barista":{ex:["点单","库存","会员活动"],ed:["拉花与稳定出品","早上七点的人情味"]},
+"Hotel receptionist":{ex:["入住与预订","标准需求","升级推销"],ed:["难缠客人的分寸","本地人的热情"]},
+"Flight attendant":{ex:["广播与文书","排班"],ed:["紧急情况的安全处置","机舱里镇得住场的从容"]},
+"Tour guide":{ex:["行程与讲稿起草","预订与后勤"],ed:["现场讲故事","带一群人在野外"]},
+"Baker":{ex:["配方换算与成本","订货","社交发帖"],ed:["手感里的面团","凌晨四点的手艺"]},
+"Butcher":{ex:["订货与库存","定价"],ed:["刀工","肉质判断"]},
+"Esthetician":{ex:["预约与提醒","产品推荐"],ed:["亲手护理","私人信任"]},
+"Nail technician":{ex:["预约","款式灵感"],ed:["精细的手上活","熟客与交情"]},
+"Makeup artist":{ex:["妆面参考","预约"],ed:["每张脸都不一样","大日子的托付"]},
+"Massage therapist":{ex:["预约与记录"],ed:["治疗性的触碰","摸得出的紧绷"]},
+"Housekeeper / cleaner":{ex:["排期与耗材"],ed:["真实屋子里的体力活","交钥匙的信任"]},
+"Janitor / custodian":{ex:["耗材订购","排班"],ed:["机器人搞不定的杂活","对楼里门儿清"]},
+"Security guard":{ex:["监控与告警","事件报告","门禁记录"],ed:["人站在那里的威慑","对峙时的判断"]},
+"Nanny":{ex:["日程与反馈"],ed:["一家人的深度信任","全身心的照护"]},
+"Pet groomer":{ex:["预约与提醒"],ed:["按住乱动的毛孩子","主人的信任"]},
+"Wedding planner":{ex:["供应商调研","预算与时间线","灵感版"],ed:["婚礼当天的现场指挥","跟一家人打交道的情商"]},
+"Taxi / rideshare driver":{ex:["派单与导航","计价"],ed:["犄角旮旯与形形色色的乘客","深夜那句人话"]},
+"Bus driver":{ex:["路线规划","日志"],ed:["载着真人的安全","车流混乱中的判断"]},
+"Courier / messenger":{ex:["路线优化","物流跟踪"],ed:["楼、门与人","最后五十米"]},
+"Forklift operator":{ex:["库存扫码","任务分派"],ed:["窄道里的异形货","地面安全直觉"]},
+"Train operator":{ex:["排班与监控","日志"],ed:["担责的安全判断","线路上的突发"]},
+"Air traffic controller":{ex:["流量优化辅助","常规移交"],ed:["人命关天的担责","超负荷时的冷静"]},
+"Postal worker":{ex:["分拣自动化","路线优化"],ed:["每个门口都不一样","街坊四邻的熟络"]},
+"Soldier / military":{ex:["后勤与文书","情报摘要","训练材料"],ed:["战场上的实体存在","炮火下的担责"]},
+"Detective / investigator":{ex:["档案检索与串并","报告起草","监控回看"],ed:["审讯与直觉","对案件担责的判断"]},
+"Correctional officer":{ex:["报告与记录","监控辅助"],ed:["在场的威慑与安抚","面对随时可能失控的人"]},
+"Urban planner":{ex:["区划分析","规划文本起草","公众意见汇总"],ed:["社区信任与博弈","对真实街区的判断"]},
+"Politician":{ex:["讲稿与声明初稿","政策摘要","选民回复"],ed:["选票只投给人","握手与担责"]},
+"Clergy / religious leader":{ex:["讲道研究与初稿","排期","通讯"],ed:["人生大事的在场","一个社群的信任"]},
+"Sports coach":{ex:["训练计划","录像分析","数据统计"],ed:["更衣室里的激励","读懂运动员"]},
+"My role isn't listed":{ex:["你日常中例行、数字化、可重复的部分","主要是文字、数据或可预测产出的工作"],ed:["需要在场、信任或有人担责的工作","判断力、动手能力和原创思考"]}
+};
+const QUESTIONS_ZH=["你的工作有多少是例行、重复的？","有多少是产出文字、代码、图像，或分析数据？","有多少可以完全在屏幕上完成、不需要人到场？","有多少依赖面对面的信任、照护或说服？","有多少需要在不可预测的环境中动手操作？","有多少是必须有人担责的高风险判断？"];
+const OPTS_ZH=["几乎没有","有一些","很多"];
+const BANDS_ZH=[
+  {name:"低暴露",meaning:"AI 是你的助手",desc:"你工作价值的核心 AI 很难碰到。它会帮你清掉杂活，而不是取代你。"},
+  {name:"中等暴露",meaning:"角色会适应",desc:"你的一部分日常确实能被自动化，但核心还在。工作会向 AI 做不了的部分转移——并转向指挥 AI 去做它能做的。"},
+  {name:"高暴露",meaning:"工作被重塑",desc:"相当大比例的典型任务已在现今 AI 的能力范围内。头衔可能还在，但工作内容——以及需要多少人来做——会大变。"},
+  {name:"极高暴露",meaning:"重大冲击",desc:"大部分核心任务是现在或近期 AI 就能做好的。这个角色会承受实际压力，出路是尽快转向人类优势的部分。"}
+];
+const MOVES_ZH={
+  high:[
+    ["01","<b>成为指挥 AI 的人。</b>审核、纠正并为 AI 产出负责的人，比做原始任务的人更值钱。"],
+    ["02","<b>往价值链上游走。</b>从产出交付物转向对结果负责——策略、关系，以及只有人能担责的决定。"],
+    ["03","<b>锚定人类优势。</b>把需要信任、在场、品味或判断的部分做深，那是你不可替代的地方。"],
+    ["04","<b>用 AI 做到 10 倍。</b>赢家不是抗拒 AI 的人，而是用它覆盖十倍战场的人。"]
+  ],
+  low:[
+    ["01","<b>让 AI 清掉杂活。</b>把例行、数字化的部分交出去，把时间花在真正属于你的工作上。"],
+    ["02","<b>照样要学工具。</b>安全的角色也奖励会用 AI 的人——你会比不会用的同行更快、更值钱。"],
+    ["03","<b>把人类优势做深。</b>例行工作越便宜，你核心的信任、手艺和判断就越值钱。"],
+    ["04","<b>盯住相邻任务。</b>你工作里行政和数字化的边缘会最先变——先下手，你就是主导变化的人。"]
+  ]
+};
+/* Language helpers */
+function isZh(){ return LANG==="zh"; }
+function dispName(j){ return isZh()&&ZH[j.n]?ZH[j.n][0]:j.n; }
+function jobLists(j){ return isZh()&&ZHJOB[j.n]?ZHJOB[j.n]:j; }
+function hzn(h){ return isZh()?(H_ZH[h]||h):h; }
+function catName(c){ return isZh()?(CAT_ZH[c]||c):c; }
+function bandView(band){ if(!isZh()) return band; const i=BANDS.indexOf(band); return Object.assign({},band,BANDS_ZH[i]); }
+function qText(i){ return isZh()?QUESTIONS_ZH[i]:QUESTIONS[i].q; }
+function curOpts(){ return isZh()?OPTS_ZH:OPTS; }
+function curMoves(){ return isZh()?MOVES_ZH:MOVES; }
 const CJK_RE=/[一-鿿]/;
 function zhMatch(j,q){
   let best=0, hit="";
@@ -1308,9 +1570,18 @@ function openResults(html){
   resultsEl.scrollTop=0;
 }
 function jobRow(j,q,zh){
-  const right=j.c==="Custom"?"":`${escapeHtml(j.c)} · ${j.s}`;
-  const zhTag=zh?` <span class="zhn">${hl(zh,q||"")}</span>`:"";
-  const nameHtml=zh?escapeHtml(j.n)+zhTag:hl(j.n,q||"");
+  const right=j.c==="Custom"?"":`${escapeHtml(catName(j.c))} · ${j.s}`;
+  let nameHtml;
+  if(isZh()){
+    // zh mode: Chinese name primary, English secondary
+    const zhName=dispName(j);
+    const zhPart=CJK_RE.test(q||"")?hl(zhName,q):escapeHtml(zhName);
+    const enPart=(q&&!CJK_RE.test(q))?hl(j.n,q):escapeHtml(j.n);
+    nameHtml=`${zhPart} <span class="zhn">${enPart}</span>`;
+  }else{
+    const zhTag=zh?` <span class="zhn">${hl(zh,q||"")}</span>`:"";
+    nameHtml=zh?escapeHtml(j.n)+zhTag:hl(j.n,q||"");
+  }
   return `<button class="res-item" data-name="${escapeHtml(j.n)}"><span>${nameHtml}</span><span class="cat">${right}</span></button>`;
 }
 const POPULAR=["Software developer","Teacher","Nurse","Marketer","Accountant","Customer support rep","Graphic designer","Product manager"];
@@ -1319,13 +1590,13 @@ function renderResults(q){
 
   /* Empty query → popular roles + category drill-down */
   if(!query){
-    let html=`<div class="res-group-label">Popular</div>`;
+    let html=`<div class="res-group-label">${isZh()?"热门":"Popular"}</div>`;
     POPULAR.forEach(n=>{ const j=JOBS.find(x=>x.n===n); if(j) html+=jobRow(j); });
-    html+=`<div class="res-group-label">Browse by category</div>`;
+    html+=`<div class="res-group-label">${isZh()?"按类别浏览":"Browse by category"}</div>`;
     const cats={};
     JOBS.forEach(j=>{ if(j.c!=="Custom") cats[j.c]=(cats[j.c]||0)+1; });
     Object.keys(cats).sort().forEach(c=>{
-      html+=`<button class="res-item res-cat-row" data-cat="${escapeHtml(c)}"><span class="cat-name">${escapeHtml(c)}</span><span class="cat">${cats[c]} roles →</span></button>`;
+      html+=`<button class="res-item res-cat-row" data-cat="${escapeHtml(c)}"><span class="cat-name">${escapeHtml(catName(c))}</span><span class="cat">${isZh()?cats[c]+" 个职业 →":cats[c]+" roles →"}</span></button>`;
     });
     html+=jobRow(JOBS[JOBS.length-1]);
     openResults(html);
@@ -1344,8 +1615,8 @@ function renderResults(q){
     .slice(0,40);
 
   if(scored.length===0){
-    const msg=isCJK
-      ? `没有找到“<b>${escapeHtml(q)}</b>”。选一个最接近的职业，或选 <b>My role isn't listed</b>，用下面的问题来校准。`
+    const msg=(isCJK||isZh())
+      ? `没有找到“<b>${escapeHtml(q)}</b>”。选一个最接近的职业，或选「<b>我的职业不在列表</b>」，用下面的问题来校准。`
       : `No match for “<b>${escapeHtml(q)}</b>.” Pick the closest role, or choose <b>My role isn't listed</b> and let the questions calibrate it.`;
     openResults(`<div class="res-empty">${msg}</div>`+jobRow(JOBS[JOBS.length-1]));
     return;
@@ -1356,8 +1627,8 @@ function renderResults(q){
   openResults(html);
 }
 function renderCategory(cat){
-  let html=`<button class="res-item res-back" data-back><span>← All categories</span></button>`;
-  html+=`<div class="res-group-label">${escapeHtml(cat)}</div>`;
+  let html=`<button class="res-item res-back" data-back><span>${isZh()?"← 所有类别":"← All categories"}</span></button>`;
+  html+=`<div class="res-group-label">${escapeHtml(catName(cat))}</div>`;
   JOBS.filter(j=>j.c===cat).sort((a,b)=>b.s-a.s).forEach(j=>{ html+=jobRow(j); });
   openResults(html);
   searchEl.focus();
@@ -1383,9 +1654,9 @@ function buildQuestions(){
   questionsEl.innerHTML="";
   QUESTIONS.forEach((qq,i)=>{
     const wrap=document.createElement("div"); wrap.className="q";
-    const t=document.createElement("div"); t.className="q-text"; t.textContent=qq.q;
+    const t=document.createElement("div"); t.className="q-text"; t.textContent=qText(i);
     const seg=document.createElement("div"); seg.className="seg"; seg.setAttribute("role","group");
-    OPTS.forEach((opt,oi)=>{
+    curOpts().forEach((opt,oi)=>{
       const b=document.createElement("button");
       b.type="button"; b.textContent=opt;
       b.setAttribute("aria-pressed", answers[i]===oi ? "true":"false");
@@ -1420,16 +1691,20 @@ function rankInfo(score){
 function slugify(s){ return s.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,""); }
 function jobSlug(job){ return job.c==="Custom" ? "custom" : slugify(job.n); }
 const SLUGS={}; JOBS.forEach(j=>{ SLUGS[jobSlug(j)]=j; });
-function roleLabel(job){ return job.c==="Custom" ? "My job" : job.n; }
+function roleLabel(job){ return job.c==="Custom" ? (isZh()?"我的工作":"My job") : dispName(job); }
 function syncURL(){
-  if(!current){ history.replaceState(null,"",location.pathname); return; }
-  const p=new URLSearchParams(); p.set("job",jobSlug(current)); p.set("a",answers.join(""));
-  history.replaceState(null,"",location.pathname+"?"+p.toString());
+  const p=new URLSearchParams();
+  if(isZh()) p.set("lang","zh");
+  if(current){ p.set("job",jobSlug(current)); p.set("a",answers.join("")); }
+  const qs=p.toString();
+  history.replaceState(null,"",location.pathname+(qs?"?"+qs:""));
 }
 function shareURL(){ return location.href; }
 function shareText(){
-  const score=computeScore(), band=bandFor(score);
-  return `My job "${roleLabel(current)}" scored ${score}/100 on the AI Exposure Index — ${band.name}. Will AI take yours?`;
+  const score=computeScore(), band=bandFor(score), bv=bandView(band);
+  return isZh()
+    ? `我的工作「${roleLabel(current)}」AI 暴露指数 ${score}/100 —— ${bv.name}。AI 会取代你的工作吗？测测你的：`
+    : `My job "${roleLabel(current)}" scored ${score}/100 on the AI Exposure Index — ${band.name}. Will AI take yours?`;
 }
 
 /* ---------------- Select & render ---------------- */
@@ -1438,9 +1713,9 @@ function selectJob(job, opts){
   opts=opts||{};
   current=job;
   answers=[1,1,1,1,1,1];
-  searchEl.value=job.n==="My role isn't listed" ? "" : job.n;
+  searchEl.value=job.n==="My role isn't listed" ? "" : dispName(job);
   resultsEl.classList.remove("open"); searchEl.setAttribute("aria-expanded","false");
-  $("#roleName").textContent=job.n==="My role isn't listed" ? "Your role" : job.n;
+  $("#roleName").textContent=job.n==="My role isn't listed" ? (isZh()?"你的职业":"Your role") : dispName(job);
   buildQuestions();
   analyzerEl.classList.add("show");
   update(true);
@@ -1470,20 +1745,22 @@ function update(){
   const score=computeScore();
   const band=bandFor(score);
 
+  const bv=bandView(band);
   animateNumber($("#scoreNum"),score);
-  const bandEl=$("#scoreBand"); bandEl.textContent=band.name; bandEl.style.color=band.color;
-  $("#scoreDesc").textContent=band.desc;
+  const bandEl=$("#scoreBand"); bandEl.textContent=bv.name; bandEl.style.color=band.color;
+  $("#scoreDesc").textContent=bv.desc;
   $("#marker").style.left=score+"%";
   $("#liveDot").style.color=band.color; $("#liveDot").style.background=band.color;
-  $("#horizon").textContent=current.h;
-  $("#meaning").textContent=band.meaning;
+  $("#horizon").textContent=hzn(current.h);
+  $("#meaning").textContent=bv.meaning;
 
   // breakdown lists
-  fillList($("#exposedList"),current.ex);
-  fillList($("#edgeList"),current.ed);
+  const jl=jobLists(current);
+  fillList($("#exposedList"),jl.ex);
+  fillList($("#edgeList"),jl.ed);
 
   // moves by band
-  const set = score>=55 ? MOVES.high : MOVES.low;
+  const set = score>=55 ? curMoves().high : curMoves().low;
   const mv=$("#moves"); mv.innerHTML="";
   set.forEach(([n,txt])=>{
     const d=document.createElement("div"); d.className="move";
@@ -1494,7 +1771,9 @@ function update(){
   // rank / percentile
   const ri=rankInfo(score);
   $("#rankPill").hidden=false;
-  $("#rankText").innerHTML=`More exposed than <b>${ri.pct}%</b> of jobs · <b>#${ri.rank}</b> of ${ri.total}`;
+  $("#rankText").innerHTML=isZh()
+    ? `比 <b>${ri.pct}%</b> 的职业更暴露 · 第 <b>${ri.rank}</b> / ${ri.total} 名`
+    : `More exposed than <b>${ri.pct}%</b> of jobs · <b>#${ri.rank}</b> of ${ri.total}`;
 
   // shareable card + deep link
   renderCard(score,band,ri);
@@ -1534,9 +1813,9 @@ function fitFont(ctx,text,family,weight,start,min,maxW){
 }
 function renderCard(score,band,ri){
   const ctx=cardCanvas.getContext("2d");
-  const disp="'Space Grotesk', system-ui, sans-serif";
-  const mono="'Space Mono', ui-monospace, monospace";
-  const body="'Inter', system-ui, sans-serif";
+  const disp="'Space Grotesk','PingFang SC','Microsoft YaHei',system-ui,sans-serif";
+  const mono="'Space Mono','PingFang SC','Microsoft YaHei',ui-monospace,monospace";
+  const body="'Inter','PingFang SC','Microsoft YaHei',system-ui,sans-serif";
   const INK="#141922", INKSOFT="#3A424F", MUTED="#68717F", FAINT="#98A1AF";
   const BRAND="#2233E6", INSTR="#12151D", INSTRMUT="#8A94A6";
   const bandCol=BAND_HEX[band.name]||"#E39A2B";
@@ -1551,27 +1830,29 @@ function renderCard(score,band,ri){
   ctx.fillStyle=g; ctx.fillRect(0,0,CARD_W,CARD_H);
 
   const PAD=76;
-  try{ ctx.letterSpacing="2.5px"; }catch(e){}
+  try{ ctx.letterSpacing=isZh()?"1px":"2.5px"; }catch(e){}
   ctx.textBaseline="alphabetic";
   ctx.fillStyle=MUTED; ctx.font=`400 19px ${mono}`;
-  ctx.fillText("AI EXPOSURE INDEX  ·  2026",PAD,104);
+  ctx.fillText(isZh()?"AI 暴露指数  ·  2026":"AI EXPOSURE INDEX  ·  2026",PAD,104);
   try{ ctx.letterSpacing="0px"; }catch(e){}
 
-  // role name (wrap up to 2 lines)
+  // role name (wrap up to 2 lines; CJK has no spaces — wrap per character)
   const role=roleLabel(current);
   const maxW=560;
   let fs=fitFont(ctx,role,disp,700,72,40,maxW);
   ctx.fillStyle=INK; ctx.font=`700 ${fs}px ${disp}`;
-  const words=role.split(" "); const lines=[]; let line="";
-  words.forEach(w=>{ const t=line?line+" "+w:w; if(ctx.measureText(t).width>maxW&&line){lines.push(line);line=w;}else line=t; });
+  const joiner=CJK_RE.test(role)?"":" ";
+  const words=CJK_RE.test(role)?role.split(""):role.split(" ");
+  const lines=[]; let line="";
+  words.forEach(w=>{ const t=line?line+joiner+w:w; if(ctx.measureText(t).width>maxW&&line){lines.push(line);line=w;}else line=t; });
   if(line)lines.push(line);
   let ty=190; lines.slice(0,2).forEach(ln=>{ ctx.fillText(ln,PAD,ty); ty+=fs+6; });
 
   // sub verdict
   ctx.fillStyle=INKSOFT; ctx.font=`400 24px ${body}`;
-  ctx.fillText("Will AI take your job?",PAD,ty+18);
+  ctx.fillText(isZh()?"AI 会取代你的工作吗？":"Will AI take your job?",PAD,ty+18);
   ctx.fillStyle=MUTED; ctx.font=`400 19px ${body}`;
-  ctx.fillText(`Ranked #${ri.rank} of ${ri.total} roles for AI exposure.`,PAD,ty+52);
+  ctx.fillText(isZh()?`AI 暴露度排名 第 ${ri.rank} / ${ri.total} 名`:`Ranked #${ri.rank} of ${ri.total} roles for AI exposure.`,PAD,ty+52);
 
   // brand footer
   const by=CARD_H-70;
@@ -1603,7 +1884,7 @@ function renderCard(score,band,ri){
   ctx.fillText("/100",cx+ip+nW+12,cy+178);
   // band
   ctx.fillStyle=bandCol; ctx.font=`700 30px ${disp}`;
-  ctx.fillText(band.name,cx+ip,cy+228);
+  ctx.fillText(bandView(band).name,cx+ip,cy+228);
   // gauge
   const gx=cx+ip, gw=cw-ip*2, gy=cy+chh-52, gh=12;
   const grad=ctx.createLinearGradient(gx,0,gx+gw,0);
@@ -1627,7 +1908,7 @@ $("#dlBtn").onclick=async()=>{
   const a=document.createElement("a"); a.href=url; a.download=`ai-exposure-${jobSlug(current)}.png`;
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(()=>URL.revokeObjectURL(url),1000);
-  flashNote("Card downloaded ✓");
+  flashNote(isZh()?"成绩卡已下载 ✓":"Card downloaded ✓");
 };
 $("#shareXBtn").onclick=()=>{
   const u=`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText())}&url=${encodeURIComponent(shareURL())}&hashtags=WillAITakeMyJob,AI`;
@@ -1640,7 +1921,7 @@ $("#shareLiBtn").onclick=()=>{
 $("#copyLinkBtn").onclick=async()=>{
   try{ await navigator.clipboard.writeText(shareURL()); }
   catch(e){ const ta=document.createElement("textarea"); ta.value=shareURL(); document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); }
-  flashNote("Link copied ✓");
+  flashNote(isZh()?"链接已复制 ✓":"Link copied ✓");
 };
 // Native share (mobile) — share the image + text when supported
 if(navigator.share){
@@ -1658,10 +1939,149 @@ if(navigator.share){
   };
 }
 
+/* ---------------- Static UI translation ---------------- */
+const UI={
+en:{
+  nav:"How it works",
+  eyebrow:"Task-level AI exposure · 2026",
+  h1:"Will AI take <em>your&nbsp;job?</em>",
+  lede:"The honest answer is rarely yes or no. AI comes for <b>tasks</b>, not titles — so the real question is how much of your day it can already do. Find your role, tune it to your actual work, and get a clear read.",
+  placeholder:"Type your job title… 支持中文",
+  hint:"↵ to select",
+  analyzing:"Analyzing role", change:"Change role",
+  qTitle:"Tune it to your real work",
+  qSub:"Two jobs with the same title can be worlds apart. Adjust these and the reading updates live.",
+  rLabel:"AI Exposure Index", live:"Live", pick:"Pick a role to begin.",
+  k1:"Timeframe", k2:"What it means",
+  exposedH:'What AI is coming for <span class="tag">Exposed</span>',
+  edgeH:'Your human edge <span class="tag">Holds</span>',
+  aheadT:"How to stay ahead", aheadS:"Exposure isn't a verdict — it's a map of where to move.",
+  shareEyebrow:"Share your result",
+  dl:"Download card", postx:"Post on X", copylink:"Copy link", nshare:"Share…",
+  disc:"This is a directional estimate, not a prediction or career advice. It reflects how much of a typical version of this role current and near-term AI can meaningfully do — how much the work <em>changes</em>, not whether the job disappears. Your skills, employer, and market matter more than any single number.",
+  mEyebrow:"The method", mH2:"Jobs are bundles of tasks.",
+  mP1:"<b>AI doesn't replace jobs; it absorbs tasks.</b> Every role is a mix of things — some routine and digital, some physical, human, or high-stakes. The Exposure Index estimates what share of a role's typical tasks current and near-term AI can already do well, then lets you adjust for how your own day actually breaks down.",
+  mP2:"Scores lean on the pattern found across task-level automation research: language, data, and predictable digital work sits closest to what today's models are good at, while physical dexterity, real human trust, and accountable judgment stay hardest to automate.",
+  factors:["Routine, repeatable, rule-based work","Text, code, images, and data analysis","Fully doable on a screen, no presence needed","In-person trust, care, and persuasion","Physical skill in unpredictable settings","High-stakes, accountable judgment"],
+  gEyebrow:"Good to know",
+  gP1:"Numbers are estimates, not forecasts — treat them as a conversation starter, not a career decision. Everything runs in your browser; nothing you enter is sent anywhere or stored. No account, no tracking.",
+  gP2:"Don't see your exact title? Pick the closest one, or choose <b>“My role isn't listed”</b> and let the questions do the work.",
+  faqEyebrow:"Common questions", faqH2:"Will AI take your job? — the honest FAQ",
+  faqQ:["Will AI take my job?","What is the AI Exposure Index?","How is AI exposure calculated?","Which jobs are most exposed to AI?","Is the AI Exposure Index free and private?"],
+  faqA:["The honest answer is rarely a simple yes or no. AI comes for <b>tasks</b>, not titles — so the real question is how much of your day it can already do. The AI Exposure Index gives a task-level read: for your role it estimates what share of typical tasks current and near-term AI can meaningfully do, then lets you adjust for how your own work actually breaks down.",
+    "It's a directional 0–100 score estimating how much of a role's typical tasks current and near-term AI can already do well. A low score means AI mostly assists you; a high score means the work — and how many people do it — is likely to change a lot. It measures how much the work <em>changes</em>, not whether the job disappears.",
+    "Every role is a bundle of tasks. The index estimates what share of a role's typical tasks today's AI can do, informed by task-level automation research: routine, text, code and data work sits closest to what models are good at, while physical dexterity, in-person trust, and accountable judgment stay hardest to automate. Six questions then fine-tune the score to your actual day.",
+    "Roles built on routine, digital, language and data work tend to score highest — for example data entry clerks, telemarketers, bookkeepers, translators, copywriters and customer support. Roles built on hands-on physical skill, in-person trust and high-stakes human judgment — such as nurses, electricians, plumbers and firefighters — tend to score lowest.",
+    "Yes. It's completely free with no account required. Everything runs in your browser — nothing you enter is sent to a server, tracked, or stored anywhere."],
+  footSmall:"Built as a no-backend tool · 2026"
+},
+zh:{
+  nav:"工作原理",
+  eyebrow:"任务层面的 AI 暴露度 · 2026",
+  h1:"AI 会取代<em>你的工作</em>吗？",
+  lede:"诚实的答案很少是简单的会或不会。AI 拿走的是<b>任务</b>，不是头衔——真正的问题是：你一天的工作它已经能做多少？找到你的职业，按真实工作微调，得到一个清晰的读数。",
+  placeholder:"输入你的职业… English OK",
+  hint:"↵ 选择",
+  analyzing:"正在分析职业", change:"换个职业",
+  qTitle:"按你的真实工作微调",
+  qSub:"同一个头衔可能是完全不同的两份工作。调整下面的选项，读数会实时更新。",
+  rLabel:"AI 暴露指数", live:"实时", pick:"先选择一个职业。",
+  k1:"时间窗口", k2:"意味着什么",
+  exposedH:'AI 正在接手的部分 <span class="tag">暴露</span>',
+  edgeH:'你的人类优势 <span class="tag">稳固</span>',
+  aheadT:"如何保持领先", aheadS:"暴露度不是判决书——它是一张告诉你往哪儿挪的地图。",
+  shareEyebrow:"分享你的结果",
+  dl:"下载成绩卡", postx:"发到 X", copylink:"复制链接", nshare:"分享…",
+  disc:"这是方向性估计，不是预测，也不是职业建议。它反映的是当前和近期 AI 能在多大程度上完成这个职业的典型任务——衡量工作会<em>变多少</em>，而不是这份工作会不会消失。你的技能、雇主和市场比任何单一数字都重要。",
+  mEyebrow:"方法论", mH2:"工作是一捆任务。",
+  mP1:"<b>AI 不会取代职业，它吸收的是任务。</b>每个职业都是多种事务的组合——有的例行且数字化，有的需要动手、有人情味或高风险。暴露指数估计当前和近期 AI 已能做好某职业典型任务的比例，然后让你按自己一天的实际构成来调整。",
+  mP2:"分数依据任务级自动化研究的共同规律：语言、数据和可预测的数字工作离今天模型的能力最近，而动手的灵巧、真实的人际信任和担责的判断最难被自动化。",
+  factors:["例行、重复、有规则可循的工作","文字、代码、图像与数据分析","完全可在屏幕上完成、无需到场","面对面的信任、照护与说服","不可预测环境中的动手技能","高风险、需有人担责的判断"],
+  gEyebrow:"需要知道",
+  gP1:"数字是估计，不是预言——把它当作聊天的起点，而不是职业决定。一切都在你的浏览器里运行；你输入的内容不会被发送或存储。无账号、无跟踪。",
+  gP2:"找不到你的职业？选一个最接近的，或选择「<b>我的职业不在列表</b>」，让问题来校准。",
+  faqEyebrow:"常见问题", faqH2:"AI 会取代你的工作吗？——诚实的 FAQ",
+  faqQ:["AI 会取代我的工作吗？","什么是 AI 暴露指数？","暴露度是怎么算的？","哪些职业最容易被 AI 取代？","免费吗？隐私怎么办？"],
+  faqA:["诚实的答案很少是简单的会或不会。AI 拿走的是<b>任务</b>，不是头衔——真正的问题是你的日常它已经能做多少。AI 暴露指数给出任务层面的读数：先估计当前和近期 AI 能完成这个职业典型任务的比例，再让你按自己工作的实际构成微调。",
+    "一个 0–100 的方向性分数，估计当前和近期 AI 已能做好某职业典型任务的比例。低分意味着 AI 主要是你的助手；高分意味着工作内容——以及需要多少人来做——会发生很大变化。它衡量的是工作<em>变多少</em>，不是这份工作会不会消失。",
+    "每个职业都是一捆任务。指数估计当前 AI 能做好其中多少，依据任务级自动化研究的共同规律：例行、文字、代码和数据类工作离模型能力最近，而动手灵巧性、面对面信任和担责判断最难自动化。六个问题再把分数微调到你的真实日常。",
+    "建立在例行、数字化、语言和数据工作上的职业分数最高——如数据录入、电话销售、记账、翻译、文案和客服。建立在动手技能、面对面信任和高风险人类判断上的职业分数最低——如护士、电工、水管工和消防员。",
+    "完全免费，无需注册。一切都在你的浏览器里运行——你输入的任何内容都不会被发送、跟踪或存储。"],
+  footSmall:"无后端 · 纯浏览器工具 · 2026"
+}
+};
+function setBtnText(el,txt){ el.lastChild.nodeValue=" "+txt+" "; }
+function applyStatic(){
+  const t=UI[LANG];
+  document.documentElement.lang=isZh()?"zh-CN":"en";
+  $("#langBtn").textContent=isZh()?"EN":"中文";
+  document.querySelector(".top a.method-link").textContent=t.nav;
+  document.querySelector(".hero .eyebrow").textContent=t.eyebrow;
+  document.querySelector(".hero h1").innerHTML=t.h1;
+  document.querySelector(".hero .lede").innerHTML=t.lede;
+  searchEl.placeholder=t.placeholder;
+  document.querySelector(".search-hint").textContent=t.hint;
+  document.querySelector(".job-head small").textContent=t.analyzing;
+  setBtnText($("#changeJob"),t.change);
+  const qp=document.querySelector("#questionPanel");
+  qp.querySelector(".p-title").textContent=t.qTitle;
+  qp.querySelector(".p-sub").textContent=t.qSub;
+  document.querySelector(".r-label").textContent=t.rLabel;
+  document.querySelector(".r-live").innerHTML=`<span class="dot" id="liveDot"></span> ${t.live}`;
+  if(!current) $("#scoreDesc").textContent=t.pick;
+  const ks=document.querySelectorAll(".r-foot .k");
+  ks[0].textContent=t.k1; ks[1].textContent=t.k2;
+  document.querySelector(".bd.exposed h3").innerHTML=t.exposedH;
+  document.querySelector(".bd.edge h3").innerHTML=t.edgeH;
+  document.querySelector(".ahead .p-title").textContent=t.aheadT;
+  document.querySelector(".ahead .p-sub").textContent=t.aheadS;
+  document.querySelector(".sharecard .eyebrow").textContent=t.shareEyebrow;
+  setBtnText($("#dlBtn"),t.dl);
+  setBtnText($("#shareXBtn"),t.postx);
+  setBtnText($("#copyLinkBtn"),t.copylink);
+  setBtnText($("#nativeBtn"),t.nshare);
+  document.querySelector(".disc").innerHTML=t.disc;
+  const m=document.querySelector(".method");
+  m.querySelector(".eyebrow").textContent=t.mEyebrow;
+  m.querySelector("h2").textContent=t.mH2;
+  const mps=m.querySelectorAll("p"); mps[0].innerHTML=t.mP1; mps[1].innerHTML=t.mP2;
+  m.querySelectorAll(".factor").forEach((f,i)=>{
+    const up=i<3;
+    f.innerHTML=`<span class="arrow ${up?"up":"down"}">${up?"▲":"▼"}</span> ${t.factors[i]}`;
+  });
+  const fs=document.querySelector(".foot-side");
+  fs.querySelector(".eyebrow").textContent=t.gEyebrow;
+  const fps=fs.querySelectorAll("p"); fps[0].innerHTML=t.gP1; fps[1].innerHTML=t.gP2;
+  document.querySelector(".faq .eyebrow").textContent=t.faqEyebrow;
+  document.querySelector(".faq h2").textContent=t.faqH2;
+  document.querySelectorAll(".faq summary").forEach((s,i)=>{ s.textContent=t.faqQ[i]; });
+  document.querySelectorAll(".faq .faq-a").forEach((a,i)=>{ a.innerHTML=t.faqA[i]; });
+  document.querySelector(".foot-bar small").textContent=t.footSmall;
+}
+function setLang(l){
+  LANG=(l==="zh")?"zh":"en";
+  try{ localStorage.setItem("lang",LANG); }catch(e){}
+  applyStatic(); buildChips();
+  if(current){
+    $("#roleName").textContent=current.n==="My role isn't listed" ? (isZh()?"你的职业":"Your role") : dispName(current);
+    if(current.n!=="My role isn't listed") searchEl.value=dispName(current);
+    buildQuestions(); update();
+  }else{
+    if(resultsEl.classList.contains("open")) renderResults(searchEl.value);
+    syncURL();
+  }
+}
+$("#langBtn").onclick=()=>setLang(isZh()?"en":"zh");
+
 /* ---------------- Init from deep link ---------------- */
 (function initFromURL(){
   const p=new URLSearchParams(location.search);
-  const slug=p.get("job"); if(!slug) return;
+  let l=p.get("lang");
+  if(!l){ try{ l=localStorage.getItem("lang"); }catch(e){} }
+  if(!l&&(navigator.language||"").toLowerCase().startsWith("zh")) l="zh";
+  if(l==="zh"){ LANG="zh"; applyStatic(); }
+  buildChips();
+  const slug=p.get("job"); if(!slug){ syncURL(); return; }
   const job=SLUGS[slug]; if(!job) return;
   selectJob(job,{scroll:false});
   const a=(p.get("a")||"").slice(0,6);
