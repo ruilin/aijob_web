@@ -280,9 +280,6 @@
   .res-item .cat{font-family:var(--f-mono);font-size:10.5px;color:var(--faint);letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;}
   .res-item mark{background:var(--brand-wash);color:var(--brand);border-radius:3px;padding:0 1px;}
   .res-item .zhn{color:var(--muted);font-size:13px;margin-left:6px;}
-  .res-item.res-cat-row .cat-name{font-weight:600;}
-  .res-item.res-cat-row .cat{color:var(--muted);}
-  .res-item.res-back{color:var(--brand);font-weight:600;font-size:13.5px;border-bottom:1px solid var(--line-2);}
   .res-empty{padding:16px;color:var(--muted);font-size:14px;}
   .res-empty b{color:var(--ink);}
 
@@ -1042,11 +1039,6 @@ function buildChips(){
     b.onclick=()=>selectJob(job);
     chipsEl.appendChild(b);
   });
-  const b=document.createElement("button");
-  b.className="chip";
-  b.textContent=isZh()?`浏览全部 ${JOBS.length-1} 个 ↓`:`Browse all ${JOBS.length-1} ↓`;
-  b.onclick=()=>{ renderResults(""); searchEl.focus(); };
-  chipsEl.appendChild(b);
 }
 /* built at init (bottom of script) — i18n state must exist first */
 
@@ -1590,11 +1582,7 @@ function openResults(html){
   activeIdx=-1;
   resultsEl.innerHTML=html;
   resultsEl.querySelectorAll(".res-item").forEach(el=>{
-    el.onclick=()=>{
-      if(el.dataset.cat!==undefined) return renderCategory(el.dataset.cat);
-      if(el.dataset.back!==undefined) return renderResults("");
-      selectJob(JOBS.find(j=>j.n===el.dataset.name));
-    };
+    el.onclick=()=>selectJob(JOBS.find(j=>j.n===el.dataset.name));
   });
   resultsEl.classList.add("open"); searchEl.setAttribute("aria-expanded","true");
   resultsEl.scrollTop=0;
@@ -1614,19 +1602,21 @@ function jobRow(j,q,zh){
   }
   return `<button class="res-item" data-name="${escapeHtml(j.n)}"><span>${nameHtml}</span><span class="cat">${right}</span></button>`;
 }
-const POPULAR=["Software developer","Teacher","Nurse","Marketer","Accountant","Customer support rep","Graphic designer","Product manager"];
+const POPULAR=["Software developer","Product manager","Teacher","Nurse","Accountant","Marketer","Customer support rep","Graphic designer","Data analyst","Sales representative","HR manager","Doctor / physician"];
+/* Mainstream categories first — the empty-query dropdown lists every role inline */
+const CAT_ORDER=["Tech & data","Business & strategy","Finance","Sales & support","Language & content","Design & creative","Education & care","Admin & office","People & HR","Legal","Media & performance","Science & research","Skilled & technical","Skilled trades","Hospitality & food","Personal service","Logistics & transport","Public service"];
 function renderResults(q){
   const query=(q||"").trim().toLowerCase();
 
-  /* Empty query → popular roles + category drill-down */
+  /* Empty query → popular roles, then every category expanded inline */
   if(!query){
     let html=`<div class="res-group-label">${isZh()?"热门":"Popular"}</div>`;
     POPULAR.forEach(n=>{ const j=JOBS.find(x=>x.n===n); if(j) html+=jobRow(j); });
-    html+=`<div class="res-group-label">${isZh()?"按类别浏览":"Browse by category"}</div>`;
-    const cats={};
-    JOBS.forEach(j=>{ if(j.c!=="Custom") cats[j.c]=(cats[j.c]||0)+1; });
-    Object.keys(cats).sort().forEach(c=>{
-      html+=`<button class="res-item res-cat-row" data-cat="${escapeHtml(c)}"><span class="cat-name">${escapeHtml(catName(c))}</span><span class="cat">${isZh()?cats[c]+" 个职业 →":cats[c]+" roles →"}</span></button>`;
+    CAT_ORDER.forEach(c=>{
+      const list=JOBS.filter(j=>j.c===c);
+      if(!list.length) return;
+      html+=`<div class="res-group-label">${escapeHtml(catName(c))}</div>`;
+      list.sort((a,b)=>b.s-a.s).forEach(j=>{ html+=jobRow(j); });
     });
     html+=jobRow(JOBS[JOBS.length-1]);
     openResults(html);
@@ -1655,13 +1645,6 @@ function renderResults(q){
   scored.forEach(({j,zh})=>{ html+=jobRow(j,query,zh); });
   html+=jobRow(JOBS[JOBS.length-1]);
   openResults(html);
-}
-function renderCategory(cat){
-  let html=`<button class="res-item res-back" data-back><span>${isZh()?"← 所有类别":"← All categories"}</span></button>`;
-  html+=`<div class="res-group-label">${escapeHtml(catName(cat))}</div>`;
-  JOBS.filter(j=>j.c===cat).sort((a,b)=>b.s-a.s).forEach(j=>{ html+=jobRow(j); });
-  openResults(html);
-  searchEl.focus();
 }
 
 searchEl.addEventListener("input",e=>renderResults(e.target.value));
